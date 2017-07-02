@@ -1,117 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Awesome DAVIAN</title>
-
-    <!-- Bootstrap Core CSS -->
-    <!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="{{url_for('static', filename='plugins/vendor/bootstrap/css/bootstrap.css')}}" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-
-    <!-- Plugin CSS -->
-    <link rel="stylesheet" href="{{url_for('static', filename='plugins/vendor/font-awesome/css/font-awesome.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='plugins/vendor/simple-line-icons/css/simple-line-icons.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='plugins/vendor/device-mockups/device-mockups.css')}}">
-
-    <!-- Theme CSS -->
-    <link href="{{url_for('static', filename='css/new-age.css')}}" rel="stylesheet"> 
-    <link href="{{url_for('static', filename='css/common.css')}}" rel="stylesheet">  
-    <!-- <link href="{{url_for('static', filename='css/agency.css')}}" rel="stylesheet">   -->
-    <!-- <link href="{{url_for('static', filename='css/new-age.min.css')}}" rel="stylesheet">     -->
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body id="page-top">
-
-    {% include "menu.html" %}
-    {% include "title.html" %}
-    {% include "about.html" %}
-    {% include "people.html" %}
-    {% include "research.html" %}
-    {% include "teaching.html" %}
-    {% include "publications.html" %}
-    <!-- {% include "links.html" %} -->
-    {% include "calendar.html" %}
-    {% include "map.html" %}
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2017 Awesome DAVIAN. All Rights Reserved.</p>
-            <ul class="list-inline">
-                <li>
-                    <a href="#">Privacy</a>
-                </li>
-                <li>
-                    <a href="#">Terms</a>
-                </li>
-                <li>
-                    <a href="#">FAQ</a>
-                </li>
-            </ul>
-        </div>
-    </footer>
-
-    <!-- jQuery -->
-    <script src="{{url_for('static', filename='plugins/vendor/jquery/jquery.js')}}"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{{url_for('static', filename='plugins/vendor/bootstrap/js/bootstrap.js')}}"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.js"></script>
-
-    <!-- Theme JavaScript -->
-    <script src="{{url_for('static', filename='javascript/new-age.js')}}"></script>
-
-    <script>
-    // Disable Google Maps scrolling
-    // See http://stackoverflow.com/a/25904582/1607849
-    // Disable scroll zooming and bind back the click event
-    var onMapMouseleaveHandler = function(event) {
-        var that = $(this);
-        that.on('click', onMapClickHandler);
-        that.off('mouseleave', onMapMouseleaveHandler);
-        that.find('iframe').css("pointer-events", "none");
-    }
-    var onMapClickHandler = function(event) {
-            var that = $(this);
-            // Disable the click handler until the user leaves the map area
-            that.off('click', onMapClickHandler);
-            // Enable scrolling zoom
-            that.find('iframe').css("pointer-events", "auto");
-            // Handle the mouse leave event
-            that.on('mouseleave', onMapMouseleaveHandler);
-        }
-        // Enable map zooming with mouse scroll when the user clicks the map
-    $('.maps.embed-container').on('click', onMapClickHandler);
-    function update_member(num){
-        document.getElementById('member-text').innerHTML=document.getElementById('member-text'+num).value;
-        document.getElementById('member-name').innerHTML=document.getElementById('member-name'+num).innerHTML;
-    }
-    </script>
-</body>
 
 <!-- Portfolio Modal 1 -->
-<div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="publication1" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
@@ -126,7 +15,7 @@
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="research-body ">
                             <!-- Project Details Go Here -->
-                            <h2>Title1</h2>
+                            <h2>Publication Title1</h2>
                             <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
                             <img class="img-responsive img-centered" src="../static/src/img/research/roundicons.png" alt="">
                             <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
@@ -145,7 +34,7 @@
     </div>
 </div>
 <!-- Portfolio Modal 2 -->
-<div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="publication2" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
@@ -159,7 +48,7 @@
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="research-body">
                             <!-- Project Details Go Here -->
-                            <h2>Project Name</h2>
+                            <h2>Publication Name</h2>
                             <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
                             <img class="img-responsive img-centered" src="../static/src/img/research/startup-framework.png" alt="">
                             <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
@@ -178,7 +67,7 @@
     </div>
 </div>
 <!-- Portfolio Modal 3 -->
-<div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="publication3" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
@@ -192,7 +81,7 @@
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="research-body">
                             <!-- Project Details Go Here -->
-                            <h2>Project Name</h2>
+                            <h2>Publication Name</h2>
                             <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
                             <img class="img-responsive img-centered" src="../static/src/img/research/treehouse.png" alt="">
                             <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
@@ -211,7 +100,7 @@
     </div>
 </div>
 <!-- Portfolio Modal 4 -->
-<div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="publication4" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
@@ -225,7 +114,7 @@
                     <div class="col-lg-8 col-lg-offset-2">
                         <div class="research-body">
                             <!-- Project Details Go Here -->
-                            <h2>Project Name</h2>
+                            <h2>Publication Name</h2>
                             <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
                             <img class="img-responsive img-centered" src="../static/src/img/research/golden.png" alt="">
                             <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
@@ -243,6 +132,3 @@
         </div>
     </div>
 </div>
-
-{% include "publications_model.html" %}
-</html>

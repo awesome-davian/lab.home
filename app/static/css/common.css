@@ -1,0 +1,35 @@
+.member-pic{
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    border-radius: 50%;
+}
+.research-body{
+    position: relative;
+    padding:10px;
+    text-align: left;
+}
+.teaching-list-body{
+    width:100%;
+    list-style-type: none;
+    display:block;
+
+}
+.teaching-list-element{
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.img-publication{
+    width:40%;
+    float:left;
+}
+.publication-main{
+    width:60%;
+    float:left;
+    text-align: left;
+    padding:5px 20px;
+}
+.free-text-span{
+    word-wrap: break-word;white-space:pre-line;word-break:keep-all;
+}
