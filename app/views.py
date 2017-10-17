@@ -3,6 +3,7 @@ from app import app
 from flask import render_template, redirect, url_for, request
 import flask_login
 import os
+from app import db, models, db_wrapper
 
 # Our mock database.
 users = {'davian': {'pw': 'visualking!'}}
@@ -35,15 +36,38 @@ def admin():
 		user = User()
 		user.id = user_id
 		flask_login.login_user(user)
-		return redirect(url_for('protected'))
+		return redirect(url_for('admin_title'))
 
-	return 'Bad login'
+	return flask.abort(400)
 
 @app.route('/admin_title')
 @flask_login.login_required
 def admin_title():
+	
 	print('call admin_title()')
-	return render_template("admin_title.html")
+
+	labinfo = models.LabInfo.query.filter_by(id = 1).first()
+	if labinfo == None:
+		flash('Could not found a Lab. information.')
+		return redirect(url_for('protected'))
+	
+	return render_template("admin_title.html", description=labinfo.description, sub_description=labinfo.sub_description, bg_path=labinfo.background_img_path)
+
+@app.route('/admin_title_submit', methods=['GET','POST'])
+@flask_login.login_required
+def admin_title_submit():
+
+	print('admin_title_submit()')
+
+	desc_text = request.form['description']
+	subdesc_text = request.form['sub_description']
+	background_image = request.files['bg_image']
+
+	print('description: %s, sub_description: %s' % (desc_text, subdesc_text))
+
+	db_wrapper.update_lab_info(in_desc = desc_text, in_sub_desc = subdesc_text, in_bg_image = background_image)
+
+	return redirect(url_for('admin_title'))
 
 @app.route('/admin_about')
 @flask_login.login_required
@@ -90,7 +114,7 @@ def protected():
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    return 'Logged out'
+    return redirect(url_for('admin'))
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -100,7 +124,6 @@ def user_loader(user_id):
     user = User()
     user.id = user_id
     return user
-
 
 @login_manager.request_loader
 def request_loader(request):

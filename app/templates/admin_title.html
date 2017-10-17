@@ -18,24 +18,24 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <form role="form">
+                            <form action="admin_title_submit" enctype="multipart/form-data" role="form" method="post">
                                 
                                 <div class="form-group">
-                                    <label>Main title text</label>
-                                    <input class="form-control" placeholder="Enter main title text here">
+                                    <label>Main description text</label>
+                                    <input class="form-control" name="description" id="description" placeholder="Enter main description text here" value="{{description}}">
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Sub title text area</label>
-                                    <textarea class="form-control" rows="3" placeholder="Enter subtitle text here"></textarea>
+                                    <label>Sub description text area</label>
+                                    <textarea class="form-control" rows="3" name="sub_description" id="sub_description" placeholder="Enter subtitle text here">{{sub_description}}</textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Background image</label>
-                                    <input type="file">
+                                    <label>Background image: {{bg_path}}</label>
+                                    <input type="file" id="bg_image" name="bg_image">
                                 </div>
 
-                                <button type="submit" class="btn btn-default">Submit</button>
+                                <button type="submit" name="submit" class="btn btn-default">Submit</button>
                                 <button type="reset" class="btn btn-default">Reset</button>
                             </form>
                         </div>

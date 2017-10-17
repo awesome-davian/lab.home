@@ -19,6 +19,16 @@ class Post(db.Model):
 	def __repr__(self):
 		return '<Post %r>' % (self.body)
 
+class LabInfo(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(64), index=True, unique=True)
+	description = db.Column(db.String(128), index=True, unique=True)
+	sub_description = db.Column(db.String(128), index=True, unique=True)
+	background_img_path = db.Column(db.String(128), index=True, unique=True)
+
+	def __repr__(self):
+		return '<LabInfo %r>' % (self.name)
+
 
 
 # class Publications(Document):
