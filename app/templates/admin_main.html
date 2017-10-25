@@ -86,11 +86,11 @@
 
                         <li><a href={{ url_for('admin_title') }}><i class="fa fa-star fa-fw"></i> Title</a></li>
                         <li><a href={{ url_for('admin_about') }}><i class="fa fa-location-arrow fa-fw"></i> About</a></li>
-                        <li><a href={{ url_for('admin_news') }}><i class="fa fa-bullhorn fa-fw"></i> News</a></li>
-                        <li><a href={{ url_for('admin_research') }}><i class="fa fa-university fa-fw"></i> Research</a></li>
-                        <li><a href={{ url_for('admin_member') }}><i class="fa fa-group fa-fw"></i> Member</a></li>
-                        <li><a href={{ url_for('admin_teaching') }}><i class="fa fa-book fa-fw"></i> Teaching</a></li>
-                        <li><a href={{ url_for('admin_publication') }}><i class="fa fa-wrench fa-fw"></i> Publications</a></li>
+                        <li><a href={{ url_for('admin_news', page_num=1) }}><i class="fa fa-bullhorn fa-fw"></i> News</a></li>
+                        <li><a href={{ url_for('admin_research', page_num=1) }}><i class="fa fa-university fa-fw"></i> Research</a></li>
+                        <li><a href={{ url_for('admin_member', page_num=1) }}><i class="fa fa-group fa-fw"></i> Member</a></li>
+                        <li><a href={{ url_for('admin_teaching', page_num=1) }}><i class="fa fa-book fa-fw"></i> Teaching</a></li>
+                        <li><a href={{ url_for('admin_publication', page_num=1) }}><i class="fa fa-wrench fa-fw"></i> Publications</a></li>
 
                     </ul>
                 </div>

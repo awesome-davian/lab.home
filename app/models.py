@@ -29,43 +29,88 @@ class LabInfo(db.Model):
 	def __repr__(self):
 		return '<LabInfo %r>' % (self.name)
 
+class About(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	text = db.Column(db.String(64), index=True, unique=True)
+	sub_text = db.Column(db.String(128), index=True, unique=True)
 
+	def __repr__(self):
+		return '<About %r>' % (self.text)
 
-# class Publications(Document):
-#     __database__ = 'davian_web'
-#     __collection__ = 'Publication'
+class News(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(64), index=True, unique=True)
+	contents = db.Column(db.String(128), index=True, unique=True)
+	date = db.Column(db.DateTime, index=True, unique=True)
 
-#     structure = {
-#         'title': unicode,
-#         'authors': list,         # 우리 연구실에 없는 사람인 경우 어떻게 하지?!
-#         'conference': unicode,
-#         'year': unicode,           # format : 'yyyy-mm'
-#         'status': unicode,          # accept or not
-#         'abstract': unicode,
-#         # 학회, 연도, 상태, abstract
+	def __repr__(self):
+		return '<News %r>' % (self.title)
 
-#         # file address
-#         'image': unicode,
-#         'pdf': unicode,
-#         'video': unicode
-#     }
+class Research(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(64), index=True, unique=True)
+	text1 = db.Column(db.String(128), index=True, unique=True)
+	text2 = db.Column(db.String(128), index=True, unique=True)
+	teaser_image_path = db.Column(db.String(128), index=True, unique=True)
+	member = db.Column(db.String(64), index=True, unique=True)
+	publications = db.Column(db.String(64), index=True, unique=True)
+	is_activated = db.Column(db.Boolean, index=True, unique=True)
 
-#     required_fields = ['title', 'authors', 'conference', 'year', 'status']
-#     default_value = {'image': '', 'pdf': '', 'video': '', 'abstract': ''}
-#     use_dot_notation = True
+	def __repr__(self):
+		return '<Research %r>' % (self.title)
 
+class Member(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(64), index=True, unique=True)
+	email = db.Column(db.String(128), index=True, unique=True)
+	student_id = db.Column(db.String(128), index=True, unique=True)
+	course = db.Column(db.String(128), index=True, unique=True)
+	picture_path = db.Column(db.String(64), index=True, unique=True)	
+	introduction = db.Column(db.String(64), index=True, unique=True)
+	bd = db.Column(db.String(64), index=True, unique=True)
+	md = db.Column(db.String(64), index=True, unique=True)
+	career1 = db.Column(db.String(64), index=True, unique=True)
+	career2 = db.Column(db.String(64), index=True, unique=True)
+	career3 = db.Column(db.String(64), index=True, unique=True)
+	link_github = db.Column(db.String(64), index=True, unique=True)
+	link_facebook = db.Column(db.String(64), index=True, unique=True)
+	link_twitter = db.Column(db.String(64), index=True, unique=True)
+	link_linkedin = db.Column(db.String(64), index=True, unique=True)
+	link1 = db.Column(db.String(64), index=True, unique=True)
+	link2 = db.Column(db.String(64), index=True, unique=True)
+	link3 = db.Column(db.String(64), index=True, unique=True)
+	link4 = db.Column(db.String(64), index=True, unique=True)
 
-# class Links(Document):
-#     __database__ = 'davian_web'
-#     __collection__ = 'Link'
+	def __repr__(self):
+		return '<Member %r>' % (self.name)
 
-#     structure = {
-#         'url': unicode,
-#         'description': unicode,
-#         'category': unicode,
-#         'created': datetime
-#     }
+class Teaching(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	code = db.Column(db.String(64), index=True, unique=True)
+	name = db.Column(db.String(128), index=True, unique=True)
+	description = db.Column(db.String(128), index=True, unique=True)
+	when = db.Column(db.String(128), index=True, unique=True)
+	target_audience = db.Column(db.String(64), index=True, unique=True)
+	link1 = db.Column(db.String(64), index=True, unique=True)
+	link2 = db.Column(db.String(64), index=True, unique=True)
 
-#     required_fields = ['url', 'description', 'category']
-#     default_values = {'created': datetime.utcnow}
-#     use_dot_notation = True
+	def __repr__(self):
+		return '<Teaching %r>' % (self.name)
+
+class Publications(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(64), index=True, unique=True)
+	conference = db.Column(db.String(128), index=True, unique=True)
+	abstract = db.Column(db.String(128), index=True, unique=True)
+	date = db.Column(db.String(128), index=True, unique=True)
+	teaser_image_path = db.Column(db.String(128), index=True, unique=True)
+	authors = db.Column(db.String(64), index=True, unique=True)
+	link_pdf1 = db.Column(db.String(64), index=True, unique=True)
+	link_pdf2 = db.Column(db.String(64), index=True, unique=True)
+	link_video = db.Column(db.String(64), index=True, unique=True)
+	link_source = db.Column(db.String(64), index=True, unique=True)
+	link_url = db.Column(db.String(64), index=True, unique=True)
+	link_etc = db.Column(db.String(64), index=True, unique=True)
+
+	def __repr__(self):
+		return '<Publications %r>' % (self.title)

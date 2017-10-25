@@ -9,7 +9,7 @@
 	    <!-- /.col-lg-12 -->
 	</div>
 
-	<div class="row">
+	<!-- <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -32,20 +32,20 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 	<div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Manage items.
+                    Manage publication items.
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                     	<div class="row">
                     		
-                    		<div class="col-sm-6">
+                    		<!-- <div class="col-sm-6">
                     			<div class="dataTables_length" id="dataTables-example_length">
                     				<label>Show <select name="dataTables-example_length" aria-controls="dataTables-example" class="form-control input-sm">
 	                    					<option value="10">10</option>
@@ -55,13 +55,13 @@
                     					</select> entries
                     				</label>
                     			</div>
-                    		</div>
+                    		</div> -->
 
-                    		<div class="col-sm-6">
+                    		<div class="col-sm-12">
                     			<div id="dataTables-example_filter" class="dataTables_filter">
-                    				<label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dataTables-example"></label>
+                    				<!-- <label>Search:<input type="search" class="form-control input-sm" placeholder="" aria-controls="dataTables-example"></label> -->
                     				<button type="button" class="btn btn-sm btn-primary btn-create" data-title="Create" data-toggle="modal" data-target="#new">Create New</button>
-                    				<button type="button" class="btn btn-sm btn-primary btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete_all">Delete</button>
+                    				<!-- <button type="button" class="btn btn-sm btn-primary btn-danger" data-title="Delete" data-toggle="modal" data-target="#delete_all">Delete</button> -->
                     			</div>
                     		</div>
                     	</div>
@@ -72,125 +72,30 @@
                         			<thead>
 	                            		<tr role="row">
 	                            			<th><input type="checkbox" id="checkall" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" /></th>
-		                            		<th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 15%;">ShortTitle</th>
-		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 45%;">Title</th>
+		                            		<!-- <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 15%;">ShortTitle</th> -->
+		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 60%;">Title</th>
 		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Conference</th>
 		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Date</th>
 		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 10%;">Action</th>
 	                            		</tr>
                         			</thead>
                         			<tbody>
-                            
-										<tr class="gradeA odd" role="row">
+
+                        				{% for item in publication_page %}
+
+                        				<tr class="gradeA odd" role="row">
 											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
+											<td class="sorting_1">{{item.title}}</td>
+											<td class="center">{{item.conference}}</td>
+											<td class="center">{{item.date}}</td>
 											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
+												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit_{{item.id}}" ><span class="glyphicon glyphicon-pencil"></span></button></a>
+    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete_{{item.id}}" ><span class="glyphicon glyphicon-trash"></span></button></a>
 											</td>
 										</tr>
-										<tr class="gradeA even" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA odd" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA even" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA odd" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA even" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA odd" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA even" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA odd" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
-										<tr class="gradeA even" role="row">
-											<td align="center"><input type="checkbox" class="checkthis"/></td>
-											<td class="sorting_1">SALT</td>
-											<td class="center">TExTile: Multi-Level Tile-Based Spatio-Temporal ...</td>
-											<td class="center">IEEE VIS'17</td>
-											<td class="center">5 Oct. ~ 10 Oct.</td>
-											<td align="center">
-												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></a>
-    											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></a>
-											</td>
-										</tr>
+
+                        				{% endfor %}
+
 									</tbody>
                     			</table>
                     		</div>
@@ -199,7 +104,7 @@
                     	<div class="row">
                     		
                     		<div class="col-sm-6">
-                    			<div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries
+                    			<div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing {{start_idx}} to {{end_idx}} of {{publication_count}} entries
                     			</div>
                 			</div>
 
@@ -209,25 +114,17 @@
 	                					<li class="paginate_button previous disabled" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_previous">
 	                						<a href="#">Previous</a>
 	            						</li>
+	            						{% for item in range(0, page_count) %}
+	            						{% if (item+1) == page_num %}
 	            						<li class="paginate_button active" aria-controls="dataTables-example" tabindex="0">
-	            							<a href="#">1</a>
+	            						{% else %}
+	            						<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
+	            						{% endif%}
+	            							<!-- <a href="#">{{item+1}}</a> -->
+	            							<a href={{ url_for('admin_publication', page_num=(item+1)) }}>{{item+1}}</a>
 	        							</li>
-	        							<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-	        								<a href="#">2</a>
-	    								</li>
-	    								<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-	    									<a href="#">3</a>
-										</li>
-										<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-											<a href="#">4</a>
-										</li>
-										<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-											<a href="#">5</a>
-										</li>
-										<li class="paginate_button " aria-controls="dataTables-example" tabindex="0">
-											<a href="#">6</a>
-										</li>
-										<li class="paginate_button next" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next">
+	            						{% endfor %}
+										<li class="paginate_button next disabled" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next">
 											<a href="#">Next</a>
 										</li>
 									</ul>
@@ -249,138 +146,135 @@
 <div class="modal fade" id="new" tabindex="-1" role="dialog" aria-labelledby="new" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-  			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="Heading">Create item detail</h4>
-			</div>
-  			<div class="modal-body">
-  				<div class="form-group">
-  					<label>Title:</label>
-  					<input class="form-control" type="text" placeholder="Title">
+			<form action="new" role="form" method="post">
+	  			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<h4 class="modal-title custom_align" id="Heading">Create item detail</h4>
 				</div>
-				<div class="form-group">
-  					<label>Bibtex or display text:</label>
-  					<textarea rows="2" class="form-control" placeholder="Text"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Abstract:</label>
-  					<textarea rows="2" class="form-control" placeholder="Abstract"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Teaser image:</label>
-  					<textarea rows="2" class="form-control" placeholder="Bibtex text"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Authors:</label>
-  					<textarea rows="2" class="form-control" placeholder="Authors"></textarea>
-				</div>
-				<div class="form-group">
-					<label>Links:</label>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">PDF:
-						</label>
+	  			<div class="modal-body">
+	  				<div class="form-group">
+	  					<label>Title:</label>
+	  					<input class="form-control" id="title" name="title" type="text" placeholder="Title">
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Video:
-						</label>
+					<div class="form-group">
+	  					<label>Conference:</label>
+	  					<textarea rows="2" id="conference" name="conference" class="form-control" placeholder="Text"></textarea>
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Source:
-						</label>
+					<div class="form-group">
+	  					<label>Abstract:</label>
+	  					<textarea rows="2" id="abstract" name="abstract" class="form-control" placeholder="Abstract"></textarea>
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Link:
-						</label>
+					<div class="form-group">
+	  					<label>Teaser image:</label>
+	  					<textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Bibtex text"></textarea>
+					</div>
+					<div class="form-group">
+	  					<label>Authors:</label>
+	  					<textarea rows="2" id="authors" name="authors" class="form-control" placeholder="Authors"></textarea>
+					</div>
+					<div class="form-group">
+						<label>PDF:</label>
+						<input class="form-control" id="link_pdf1" name="link_pdf1" type="text" placeholder="PDF link">
+					</div>
+					<div class="form-group">
+						<label>Video:</label>
+						<input class="form-control" id="link_video" name="link_video" type="text" placeholder="Video link">
+					</div>
+					<div class="form-group">
+						<label>Source:</label>
+						<input class="form-control" id="link_source" name="link_source" type="text" placeholder="Source link">
+					</div>
+					<div class="form-group">
+						<label>URL:</label>
+						<input class="form-control" id="link_url" name="link_url" type="text" placeholder="URL link">
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer ">
-				<button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
-			</div>
+				<div class="modal-footer ">
+					<button type="submit" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+{% for item in publication_page %}
+<div class="modal fade" id="edit_{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-  			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="Heading">Edit item detail</h4>
-			</div>
-  			<div class="modal-body">
-  				<div class="form-group">
-  					<label>Title:</label>
-  					<input class="form-control" type="text" placeholder="Title">
+			<form action="edit" role="form" method="post">
+	  			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<h4 class="modal-title custom_align" id="Heading">Edit item detail</h4>
 				</div>
-				<div class="form-group">
-  					<label>Bibtex or display text:</label>
-  					<textarea rows="2" class="form-control" placeholder="Text"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Abstract:</label>
-  					<textarea rows="2" class="form-control" placeholder="Abstract"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Teaser image:</label>
-  					<textarea rows="2" class="form-control" placeholder="Bibtex text"></textarea>
-				</div>
-				<div class="form-group">
-  					<label>Authors:</label>
-  					<textarea rows="2" class="form-control" placeholder="Authors"></textarea>
-				</div>
-				<div class="form-group">
-					<label>Links:</label>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">PDF:
-						</label>
+	  			<div class="modal-body">
+	  				<div class="form-group">
+	  					<input class="form-control" id="publication_id" name="publication_id" type="hidden" placeholder="Publication ID" value="{{item.id}}">
+	  					<label>Title:</label>
+	  					<input class="form-control" id="title" name="title" type="text" placeholder="Title" value="{{item.title}}">
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Video:
-						</label>
+					<div class="form-group">
+	  					<label>Conference:</label>
+	  					<textarea rows="2" id="conference" name="conference" class="form-control" placeholder="Text">{{item.conference}}</textarea>
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Source:
-						</label>
+					<div class="form-group">
+	  					<label>Abstract:</label>
+	  					<textarea rows="2" id="abstract" name="abstract" class="form-control" placeholder="Abstract">{{item.abstract}}</textarea>
 					</div>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" value="">Link:
-						</label>
+					<div class="form-group">
+	  					<label>Teaser image:</label>
+	  					<textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Bibtex text">{{item.teaser_image_path}}</textarea>
+					</div>
+					<div class="form-group">
+	  					<label>Authors:</label>
+	  					<textarea rows="2" id="authors" name="authors" class="form-control" placeholder="Authors">{{item.authors}}</textarea>
+					</div>
+					<div class="form-group">
+						<label>PDF:</label>
+						<input class="form-control" id="link_pdf1" name="link_pdf1" type="text" placeholder="PDF link" value="{{item.link_pdf1}}">
+					</div>
+					<div class="form-group">
+						<label>Video:</label>
+						<input class="form-control" id="link_video" name="link_video" type="text" placeholder="Video link" value="{{item.link_video}}">
+					</div>
+					<div class="form-group">
+						<label>Source:</label>
+						<input class="form-control" id="link_source" name="link_source" type="text" placeholder="Source link" value="{{item.link_source}}">
+					</div>
+					<div class="form-group">
+						<label>URL:</label>
+						<input class="form-control" id="link_url" name="link_url" type="text" placeholder="URL link" value="{{item.link_url}}">
 					</div>
 				</div>
-			</div>
-			<div class="modal-footer ">
-				<button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
-			</div>
+				<div class="modal-footer ">
+					<button type="submit" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+<div class="modal fade" id="delete_{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-				<h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
-			</div>
-			<div class="modal-body">
-				<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this record?</div>
-			</div>
-			<div class="modal-footer ">
-				<button type="button" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
-			</div>
+			<form action="delete" role="form" method="post">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					<h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure you want to delete this record?</div>
+				</div>
+				<div class="modal-footer ">
+					<input class="form-control " id="publication_id" name="publication_id" type="hidden" placeholder="Publication ID" value="{{item.id}}">
+					<button type="submit" class="btn btn-success" ><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
+
+{% endfor %}
 
 <div class="modal fade" id="delete_all" tabindex="-1" role="dialog" aria-labelledby="delete" aria-hidden="true">
 	<div class="modal-dialog">

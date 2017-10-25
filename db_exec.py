@@ -30,15 +30,35 @@ from app import db, models
 #-------------------------------------------------------------------
 #- display a Lab. information
 #-------------------------------------------------------------------
-info = models.LabInfo.query.filter_by(id = 1).first()
+# info = models.LabInfo.query.filter_by(id = 1).first()
+# if info == None:
+# 	print('None')
+# else:
+# 	print(info.id)
+# 	print(info.name)
+# 	print(info.description)
+# 	print(info.sub_description)
+# 	print(info.background_img_path)
+
+# info = models.LabInfo.query.filter_by(id = 1).update(dict(description='Data and Visual Analytics Lab.'))
+# db.session.commit()
+
+#-------------------------------------------------------------------
+#- insert a About information
+#-------------------------------------------------------------------
+# u = models.About(text='text', sub_text='sub_text')
+# db.session.add(u)
+# db.session.commit()
+
+#-------------------------------------------------------------------
+#- display a About information
+#-------------------------------------------------------------------
+info = models.About.query.filter_by(id = 1).first()
 if info == None:
 	print('None')
 else:
-	print(info.id)
-	print(info.name)
-	print(info.description)
-	print(info.sub_description)
-	print(info.background_img_path)
+	print(info.text)
+	print(info.sub_text)
 
-info = models.LabInfo.query.filter_by(id = 1).update(dict(description='Data and Visual Analytics Lab.'))
-db.session.commit()
+# info = models.LabInfo.query.filter_by(id = 1).update(dict(description='Data and Visual Analytics Lab.'))
+# db.session.commit()

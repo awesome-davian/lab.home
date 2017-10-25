@@ -18,19 +18,19 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <form role="form">
+                            <form action="admin_about_submit" role="form" method="post">
                                 
                                 <div class="form-group">
-                                    <label>Main title text</label>
-                                    <input class="form-control" placeholder="Enter main title text here">
+                                    <label>Main text</label>
+                                    <input class="form-control" id="about_text" name="about_text" placeholder="Enter main title text here" value="{{about_text}}">
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Sub title text area</label>
-                                    <textarea class="form-control" rows="3" placeholder="Enter subtitle text here"></textarea>
+                                    <label>Sub text area</label>
+                                    <textarea class="form-control" id="about_sub_text" name="about_sub_text" rows="3" placeholder="Enter subtitle text here">{{about_sub_text}}</textarea>
                                 </div>
 
-                                <button type="submit" class="btn btn-default">Submit</button>
+                                <button type="submit" id="submit" name="submit" class="btn btn-default">Submit</button>
                                 <button type="reset" class="btn btn-default">Reset</button>
                             </form>
                         </div>
