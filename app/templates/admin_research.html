@@ -72,9 +72,10 @@
                         			<thead>
 	                            		<tr role="row">
 	                            			<th><input type="checkbox" id="checkall" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" /></th>
-		                            		<th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 70%;">Title</th>
+	                            			<th tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1">ID</th>
+		                            		<th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 65%;">Title</th>
 		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Activated</th>
-		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 10%;">Action</th>
+		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 15%;">Actions</th>
 	                            		</tr>
                         			</thead>
                         			<tbody>
@@ -83,10 +84,20 @@
                             
 										<tr class="gradeA odd" role="row">
 											<td align="center"><input type="checkbox" class="checkthis"/></td>
+											<td align="center">{{item.id}}</td>
 											<td class="sorting_1">{{item.title}}</td>
 											<td align="center"><input type="checkbox" class="checkthis"/></td>
 											<td align="center">
+												<a href={{ url_for('admin_research_toggle_show', id=item.id) }} data-placement="top" data-toggle="tooltip" title="Show">
+													{% if item.show == True %}
+													<button class="btn btn-warning btn-xs" data-title="Show" data-toggle="modal" ><span class="glyphicon glyphicon-star"></span></button>
+													{% else %}
+													<button class="btn btn-default btn-xs" data-title="Show" data-toggle="modal" ><span class="glyphicon glyphicon-star-empty"></span></button>
+													{% endif %}
+												</a>
 												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit_{{item.id}}" ><span class="glyphicon glyphicon-pencil"></span></button></a>
+												<a href={{ url_for('admin_research_arrow', id=item.id, direction='up') }} data-placement="top" data-toggle="tooltip" title="Up"><button class="btn btn-success btn-xs" data-title="Up" data-toggle="modal" ><span class="glyphicon glyphicon-arrow-up"></span></button></a>
+												<a href={{ url_for('admin_research_arrow', id=item.id, direction='down')}} data-placement="top" data-toggle="tooltip" title="Down"><button class="btn btn-success btn-xs" data-title="Down" data-toggle="modal"><span class="glyphicon glyphicon-arrow-down"></span></button></a>
     											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete_{{item.id}}" ><span class="glyphicon glyphicon-trash"></span></button></a>
 											</td>
 										</tr>
@@ -173,8 +184,8 @@
 						<textarea rows="2" class="form-control" id="publications" name="publications" placeholder="Publications"></textarea>
 					</div>
 					<div class="form-group">
-						<label>Is activated:</label>
-						<textarea rows="2" class="form-control" id="is_activated" name="is_activated" placeholder="Is activated"></textarea>
+						<label> Want to show this item on the main page?</label>
+						<input id="show" name="show" type="checkbox" value="show" checked>
 					</div>
 				</div>
 				<div class="modal-footer ">
@@ -221,8 +232,12 @@
 						<textarea rows="2" class="form-control" id="publications" name="publications" placeholder="Publications">{{item.publications}}</textarea>
 					</div>
 					<div class="form-group">
-						<label>Is activated:</label>
-						<textarea rows="2" class="form-control" id="is_activated" name="is_activated" placeholder="Is activated">{{item.is_activated}}</textarea>
+						<label> Want to show this item on the main page?</label>
+						{% if item.show == True %}
+						<input id="show" name="show" type="checkbox" value="" checked>
+						{% else %}
+						<input id="show" name="show" type="checkbox" value="">
+						{% endif %}
 					</div>
 				</div>
 				<div class="modal-footer ">

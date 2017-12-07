@@ -5,7 +5,7 @@ import flask_login
 import os
 from app import db, models, db_wrapper
 from sqlalchemy import desc
-
+from datetime import datetime
 
 # Our mock database.
 users = {'davian': {'pw': 'visualking!'}}
@@ -22,19 +22,37 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template("index.html")
+	
+	labinfo = models.LabInfo.query.filter_by(id = 1).first()
+	about = models.About.query.filter_by(id = 1).first()
+	news_all = models.News.query.filter_by(show=True).order_by(desc(models.News.id)).all()
+	# news = news_all[:10]
+	news = news_all
+	people = models.Member.query.filter_by(show=True).order_by(desc(models.Member.id)).all()
+	teaching = models.Teaching.query.filter_by(show=True).order_by(desc(models.Teaching.id)).all()
+	publications = models.Publications.query.filter_by(show=True).order_by(desc(models.Publications.id)).all()
+
+	bg = labinfo.background_img_path
+
+	return render_template("index.html",
+							labinfo=labinfo, 
+							# about=about, 
+							news=news,
+							people=people, 
+							bg=bg,
+							teaching=teaching,
+							publications=publications)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
 	if request.method == 'GET':
 		return render_template("login.html")
 
-	user_id = request.form['user_id']
-	if request.form['pw'] == users[user_id]['pw']:
+	user_id = request.form.get('user_id')
+	if request.form.get('pw') == users[user_id]['pw']:
 		user = User()
 		user.id = user_id
 		flask_login.login_user(user)
@@ -51,21 +69,23 @@ def admin_title():
 		print('admin_title(), Could not found a Lab. information.')
 		return redirect(url_for('protected'))
 	
+	
 	return render_template("admin_title.html", description=labinfo.description, 
-		sub_description=labinfo.sub_description, bg_path=labinfo.background_img_path)
+		sub_description=labinfo.sub_description, bg_filename=labinfo.background_img_path)
 
 @app.route('/admin_title_submit', methods=['GET','POST'])
 @flask_login.login_required
 def admin_title_submit():
 
-	desc_text = request.form['description']
-	subdesc_text = request.form['sub_description']
-	background_image = request.files['bg_image']
+	desc_text = request.form.get('description')
+	subdesc_text = request.form.get('sub_description')
+	background_filename = request.form.get('bg_filename')
+	background_image = request.files.get('bg_image')
 
-	print('admin_title_submit(), description: %s, sub_description: %s' % (desc_text, subdesc_text))
+	print('admin_title_submit(), description: %s, sub_description: %s, bg_filename: %s' % (desc_text, subdesc_text, background_filename))
 
-	db_wrapper.update_lab_info(in_desc = desc_text, 
-		in_sub_desc = subdesc_text, in_bg_image = background_image)
+	db_wrapper.update_lab_info(desc = desc_text, 
+		sub_desc = subdesc_text, bg_filename = background_filename, bg_image = background_image)
 
 	return redirect(url_for('admin_title'))
 
@@ -90,12 +110,12 @@ def admin_about():
 @flask_login.login_required
 def admin_about_submit():
 	
-	text = request.form['about_text']
-	sub_text = request.form['about_sub_text']
+	text = request.form.get('about_text')
+	sub_text = request.form.get('about_sub_text')
 
 	print('admin_about_submit(), text: %s, sub_text: %s' % (text, sub_text))
 
-	db_wrapper.update_about(in_text = text, in_sub_text = sub_text)
+	db_wrapper.update_about(text = text, sub_text = sub_text)
 
 	return redirect(url_for('admin_about'))
 
@@ -106,37 +126,40 @@ def admin_news(page_num):
 	print('admin_news(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	news_all = models.News.query.order_by(desc(models.News.date)).all()
-	news_count = len(news_all)
-	page_count = int((news_count-1) / count_per_page + 1)
+	items = models.News.query.order_by(desc(models.News.id)).all()
+	item_count = len(items)
+	page_count = int((item_count-1) / count_per_page + 1)
+
+	today = datetime.now().strftime('%Y-%m-%d')
 
 	start_idx = (count_per_page * (page_num-1)) + 1
 	end_idx = (count_per_page * (page_num-1)) + count_per_page
-	if news_count < end_idx:
-		end_idx = news_count
+	if item_count < end_idx:
+		end_idx = item_count
 
-	news_page = []
+	item_page = []
 	idx = 1
-	for item in news_all:
+	for item in items:
 		if start_idx <= idx and idx <= end_idx:
-			news_page.append(item)
+			item_page.append(item)
 		idx += 1
 
-	print('admin_news(), news_count: %d, page_count: %d' % (news_count, page_count))
+	print('admin_news(), item_count: %d, page_count: %d' % (item_count, page_count))
 	
-	return render_template("admin_news.html", page_num = page_num, page_count = page_count, news_count = news_count, news_page = news_page, start_idx = start_idx, end_idx = end_idx)
+	return render_template("admin_news.html", page_num = page_num, page_count = page_count, item_count = item_count, item_page = item_page, start_idx = start_idx, end_idx = end_idx, today=today)
 
 @app.route('/admin_news/admin_news_create_new', methods=['GET', 'POST'])
 @flask_login.login_required
 def admin_news_create_new():
 	
-	news_title = request.form['news_title']
-	news_contents = request.form['news_contents']
-	news_date = request.form['news_date']
+	title = request.form.get('title')
+	contents = request.form.get('contents')
+	date = request.form.get('date')
+	show = request.form.get('show') != None
 
-	print('admin_news_create_new(), news_title: %s, news_contents: %s, news_date: %s' % (news_title, news_contents, news_date))
+	print('admin_news_create_new(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
 
-	db_wrapper.insert_news(in_news_title=news_title, in_news_contents=news_contents, in_news_date=news_date)
+	db_wrapper.insert_news(title=title, contents=contents, date=date, show=show)
 
 	return redirect(url_for('admin_news', page_num=1))
 
@@ -146,14 +169,15 @@ def admin_news_edit():
 
 	print('admin_news_edit()')
 	
-	news_id = request.form['news_id']
-	news_title = request.form['news_title']
-	news_contents = request.form['news_contents']
-	news_date = request.form['news_date']
-	
-	print('admin_news_edit(), news_title: %s, news_contents: %s, news_date: %s' % (news_title, news_contents, news_date))
+	id = request.form.get('id')
+	title = request.form.get('title')
+	contents = request.form.get('contents')
+	date = request.form.get('date')
+	show = request.form.get('show') != None
 
-	db_wrapper.update_news(in_news_id = news_id, in_news_title=news_title, in_news_contents=news_contents, in_news_date=news_date)
+	print('admin_news_edit(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
+
+	db_wrapper.update_news(id = id,  title=title,  contents=contents,  date=date, show=show)
 
 	return redirect(url_for('admin_news', page_num=1))
 
@@ -163,11 +187,34 @@ def admin_news_delete():
 
 	print('admin_news_delete()')
 	
-	news_id = request.form['news_id']
+	id = request.form.get('id')
 	
-	print('admin_news_delete(), news_id: %s' % (news_id))
+	print('admin_news_delete(), id: %s' % id)
 
-	db_wrapper.delete_news(in_news_id = news_id)
+	db_wrapper.delete_news(id = id)
+
+	return redirect(url_for('admin_news', page_num=1))
+
+@app.route('/admin_news/admin_news_arrow/<int:id>/<string:direction>')
+@flask_login.login_required
+def admin_news_arrow(id, direction):
+
+	print('admin_news_arrow(%d, %s)' % (id, direction))
+
+	if direction == 'up':
+		db_wrapper.news_arrow_up(id = id)
+	else:
+		db_wrapper.news_arrow_down(id = id)
+
+	return redirect(url_for('admin_news', page_num=1))
+
+@app.route('/admin_news/admin_news_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_news_toggle_show(id):
+
+	print('admin_news_toggle_show(%d)' % (id))
+
+	db_wrapper.news_toggle_show(id = id)
 
 	return redirect(url_for('admin_news', page_num=1))
 
@@ -178,7 +225,7 @@ def admin_research(page_num):
 	print('admin_research(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	research_all = models.Research.query.all()
+	research_all = models.Research.query.order_by(desc(models.Research.id)).all()
 	research_count = len(research_all)
 	page_count = int((research_count-1) / count_per_page + 1)
 
@@ -204,17 +251,18 @@ def admin_research_new():
 
 	print('admin_research_create_new()')	
 
-	title = request.form['title']
-	text1 = request.form['text1']
-	text2 = request.form['text2']
-	teaser_image_path = request.form['teaser_image']
-	member = request.form['member']
-	publications = request.form['publications']
-	is_activated = request.form['is_activated']
+	title = request.form.get('title')
+	text1 = request.form.get('text1')
+	text2 = request.form.get('text2')
+	teaser_image_path = request.form.get('teaser_image')
+	member = request.form.get('member')
+	publications = request.form.get('publications')
+	is_activated = request.form.get('is_activated')
+	show = request.form.get('show') != None
 
 	print('admin_research_create_new(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
 
-	db_wrapper.insert_research(title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated)
+	db_wrapper.insert_research(title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 
 	return redirect(url_for('admin_research', page_num=1))
 
@@ -224,18 +272,19 @@ def admin_research_edit():
 
 	print('admin_research_edit()')
 	
-	research_id = request.form['research_id']
-	title = request.form['title']
-	text1 = request.form['text1']
-	text2 = request.form['text2']
-	teaser_image_path = request.form['teaser_image']
-	member = request.form['member']
-	publications = request.form['publications']
-	is_activated = request.form['is_activated']
+	research_id = request.form.get('research_id')
+	title = request.form.get('title')
+	text1 = request.form.get('text1')
+	text2 = request.form.get('text2')
+	teaser_image_path = request.form.get('teaser_image')
+	member = request.form.get('member')
+	publications = request.form.get('publications')
+	is_activated = request.form.get('is_activated')
+	show = request.form.get('show') != None
 	
 	print('admin_research_edit(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
 
-	db_wrapper.update_research(id=research_id, title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated)
+	db_wrapper.update_research(id=research_id, title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 
 	return redirect(url_for('admin_research', page_num=1))
 
@@ -245,11 +294,34 @@ def admin_research_delete():
 
 	print('admin_research_delete()')
 	
-	research_id = request.form['research_id']
+	research_id = request.form.get('research_id')
 	
 	print('admin_research_delete(), research_id: %s' % (research_id))
 
 	db_wrapper.delete_research(id = research_id)
+
+	return redirect(url_for('admin_research', page_num=1))
+
+@app.route('/admin_research/admin_research_arrow/<int:id>/<string:direction>')
+@flask_login.login_required
+def admin_research_arrow(id, direction):
+
+	print('admin_research_arrow(%d, %s)' % (id, direction))
+
+	if direction == 'up':
+		db_wrapper.research_arrow_up(id = id)
+	else:
+		db_wrapper.research_arrow_down(id = id)
+
+	return redirect(url_for('admin_research', page_num=1))
+
+@app.route('/admin_research/admin_research_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_research_toggle_show(id):
+
+	print('admin_research_toggle_show(%d)' % (id))
+
+	db_wrapper.research_toggle_show(id = id)
 
 	return redirect(url_for('admin_research', page_num=1))
 
@@ -259,7 +331,7 @@ def admin_member(page_num):
 	print('admin_member(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	member_all = models.Member.query.all()
+	member_all = models.Member.query.order_by(desc(models.Member.id)).all()
 	member_count = len(member_all)
 	page_count = int((member_count-1) / count_per_page + 1)
 
@@ -283,29 +355,30 @@ def admin_member(page_num):
 @flask_login.login_required
 def admin_member_new():
 	
-	name = request.form['name']
-	email = request.form['email']
-	student_id = request.form['student_id']
-	course = request.form['course']
-	picture_path = request.form['picture_path']
-	introduction = request.form['introduction']
-	bd = request.form['bd']
-	md = request.form['md']
-	career1 = request.form['career1']
-	career2 = request.form['career2']
-	career3 = request.form['career3']
-	link_github = request.form['link_github']
-	link_facebook = request.form['link_facebook']
-	link_twitter = request.form['link_twitter']
-	link_linkedin = request.form['link_linkedin']
-	link1 = request.form['link1']
-	link2 = request.form['link2']
-	link3 = request.form['link3']
-	link4 = request.form['link4']
+	name = request.form.get('name')
+	email = request.form.get('email')
+	student_id = request.form.get('student_id')
+	course = request.form.get('course')
+	picture = request.files.get('picture')
+	interest = request.form.get('interest')
+	bs = request.form.get('bs')
+	ms = request.form.get('ms')
+	introduction = request.form.get('introduction')
+	# career2 = request.form.get('career2')
+	# career3 = request.form.get('career3')
+	link_github = request.form.get('link_github')
+	link_facebook = request.form.get('link_facebook')
+	link_twitter = request.form.get('link_twitter')
+	link_linkedin = request.form.get('link_linkedin')
+	# link1 = request.form.get('link1')
+	# link2 = request.form.get('link2')
+	# link3 = request.form.get('link3')
+	# link4 = request.form.get('link4')
+	show = request.form.get('show') != None
 
 	print('admin_member_new(), name: %s, email: %s, student_id: %s' % (name, email, student_id))
 
-	db_wrapper.insert_member(name=name, email=email, student_id=student_id, course=course, picture_path=picture_path, introduction=introduction, bd=bd, md=md, career1=career1, career2=career2, career3=career3, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, link1=link1, link2=link2, link3=link3, link4=link4)
+	db_wrapper.insert_member(name=name, email=email, student_id=student_id, course=course, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -315,30 +388,34 @@ def admin_member_edit():
 
 	print('admin_member_edit()')
 	
-	member_id = request.form['member_id']
-	name = request.form['name']
-	email = request.form['email']
-	student_id = request.form['student_id']
-	course = request.form['course']
-	picture_path = request.form['picture_path']
-	introduction = request.form['introduction']
-	bd = request.form['bd']
-	md = request.form['md']
-	career1 = request.form['career1']
-	career2 = request.form['career2']
-	career3 = request.form['career3']
-	link_github = request.form['link_github']
-	link_facebook = request.form['link_facebook']
-	link_twitter = request.form['link_twitter']
-	link_linkedin = request.form['link_linkedin']
-	link1 = request.form['link1']
-	link2 = request.form['link2']
-	link3 = request.form['link3']
-	link4 = request.form['link4']
+	member_id = request.form.get('member_id')
+	name = request.form.get('name')
+	email = request.form.get('email')
+	student_id = request.form.get('student_id')
+	course = request.form.get('course')
+	picture_filename = request.form.get('picture_filename')
+	picture = request.files.get('picture')
+	introduction = request.form.get('introduction')
+	interest = request.form.get('interest')
+	bs = request.form.get('bs')
+	ms = request.form.get('ms')
+	introduction = request.form.get('introduction')
+	# career1 = request.form.get('career1')
+	# career2 = request.form.get('career2')
+	# career3 = request.form.get('career3')
+	link_github = request.form.get('link_github')
+	link_facebook = request.form.get('link_facebook')
+	link_twitter = request.form.get('link_twitter')
+	link_linkedin = request.form.get('link_linkedin')
+	# link1 = request.form.get('link1')
+	# link2 = request.form.get('link2')
+	# link3 = request.form.get('link3')
+	# link4 = request.form.get('link4')
+	show = request.form.get('show') != None
 	
-	print('admin_member_edit(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
+	print('admin_member_edit(), name: %s, student_id: %s, email: %s' % (name, student_id, email))
 
-	db_wrapper.update_member(name=name, email=email, student_id=student_id, course=course, picture_path=picture_path, introduction=introduction, bd=bd, md=md, career1=career1, career2=career2, career3=career3, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, link1=link1, link2=link2, link3=link3, link4=link4)
+	db_wrapper.update_member(id=member_id, name=name, email=email, student_id=student_id, course=course, picture_filename=picture_filename, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -348,11 +425,34 @@ def admin_member_delete():
 
 	print('admin_member_delete()')
 	
-	member_id = request.form['member_id']
+	member_id = request.form.get('member_id')
 	
 	print('admin_member_delete(), member_id: %s' % (member_id))
 
-	db_wrapper.delete_member(in_member_id = member_id)
+	db_wrapper.delete_member(id = member_id)
+
+	return redirect(url_for('admin_member', page_num=1))
+
+@app.route('/admin_member/admin_member_arrow/<int:id>/<string:direction>')
+@flask_login.login_required
+def admin_member_arrow(id, direction):
+
+	print('admin_member_arrow(%d, %s)' % (id, direction))
+
+	if direction == 'up':
+		db_wrapper.member_arrow_up(id = id)
+	else:
+		db_wrapper.member_arrow_down(id = id)
+
+	return redirect(url_for('admin_member', page_num=1))
+
+@app.route('/admin_member/admin_member_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_member_toggle_show(id):
+
+	print('admin_member_toggle_show(%d)' % (id))
+
+	db_wrapper.member_toggle_show(id = id)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -363,7 +463,7 @@ def admin_teaching(page_num):
 	print('admin_teaching(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	teaching_all = models.Teaching.query.all()
+	teaching_all = models.Teaching.query.order_by(desc(models.Teaching.id)).all()
 	teaching_count = len(teaching_all)
 	page_count = int((teaching_count-1) / count_per_page + 1)
 
@@ -387,17 +487,18 @@ def admin_teaching(page_num):
 @flask_login.login_required
 def admin_teaching_new():
 	
-	code = request.form['code']
-	name = request.form['name']
-	description = request.form['description']
-	when = request.form['when']
-	target_audience = request.form['target_audience']
-	link1 = request.form['link1']
-	link2 = request.form['link2']
+	code = request.form.get('code')
+	name = request.form.get('name')
+	description = request.form.get('description')
+	when = request.form.get('when')
+	target_audience = request.form.get('target_audience')
+	link = request.form.get('link')
+	video = request.form.get('video')
+	show = request.form.get('show') != None
 
 	print('admin_teaching_new(), code: %s, name: %s' % (code, name))
 
-	db_wrapper.insert_teaching(code=code, name=name, description=description, when=when, target_audience=target_audience, link1=link1, link2=link2)
+	db_wrapper.insert_teaching(code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
@@ -407,18 +508,19 @@ def admin_teaching_edit():
 
 	print('admin_teaching_edit()')
 	
-	teaching_id = request.form['teaching_id']
-	code = request.form['code']
-	name = request.form['name']
-	description = request.form['description']
-	when = request.form['when']
-	target_audience = request.form['target_audience']
-	link1 = request.form['link1']
-	link2 = request.form['link2']
+	teaching_id = request.form.get('teaching_id')
+	code = request.form.get('code')
+	name = request.form.get('name')
+	description = request.form.get('description')
+	when = request.form.get('when')
+	target_audience = request.form.get('target_audience')
+	link = request.form.get('link')
+	video = request.form.get('video')
+	show = request.form.get('show') != None
 	
-	print('admin_teaching_edit(), code: %s, name: %s' % (code, name))
+	print('admin_teaching_edit(), id: %d. code: %s, name: %s, audience:%s ' % (int(teaching_id), code, name, target_audience))
 
-	db_wrapper.update_teaching(teaching_id=teaching_id, code=code, name=name, description=description, when=when, target_audience=target_audience, link1=link1, link2=link2)
+	db_wrapper.update_teaching(id=teaching_id, code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
@@ -428,11 +530,34 @@ def admin_teaching_delete():
 
 	print('admin_teaching_delete()')
 	
-	teaching_id = request.form['teaching_id']
+	teaching_id = request.form.get('teaching_id')
 	
 	print('admin_teaching_delete(), teaching_id: %s' % (teaching_id))
 
-	db_wrapper.delete_teaching(in_teaching_id = teaching_id)
+	db_wrapper.delete_teaching(id = teaching_id)
+
+	return redirect(url_for('admin_teaching', page_num=1))
+
+@app.route('/admin_teaching/admin_teaching_arrow/<int:id>/<string:direction>')
+@flask_login.login_required
+def admin_teaching_arrow(id, direction):
+
+	print('admin_teaching_arrow(%d, %s)' % (id, direction))
+
+	if direction == 'up':
+		db_wrapper.teaching_arrow_up(id = id)
+	else:
+		db_wrapper.teaching_arrow_down(id = id)
+
+	return redirect(url_for('admin_teaching', page_num=1))
+
+@app.route('/admin_teaching/admin_teaching_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_teaching_toggle_show(id):
+
+	print('admin_teaching_toggle_show(%d)' % (id))
+
+	db_wrapper.teaching_toggle_show(id = id)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
@@ -443,7 +568,7 @@ def admin_publication(page_num):
 	print('admin_publication(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	publication_all = models.Publications.query.all()
+	publication_all = models.Publications.query.order_by(desc(models.Publications.id)).all()
 	publication_count = len(publication_all)
 	page_count = int((publication_count-1) / count_per_page + 1)
 
@@ -467,22 +592,25 @@ def admin_publication(page_num):
 @flask_login.login_required
 def admin_publication_new():
 	
-	title = request.form['title']
-	conference = request.form['conference']
-	abstract = request.form['abstract']
-	teaser_image_path = request.form['teaser_image_path']
-	authors = request.form['authors']
-	link_pdf1 = request.form['link_pdf1']
-	# link_pdf2 = request.form['link_pdf2']
-	link_video = request.form['link_video']
-	link_source = request.form['link_source']
-	link_url = request.form['link_url']
-	# link_etc = request.form['link_etc']
+	title = request.form.get('title')
+	description = request.form.get('description')
+	year = request.form.get('year')
+	abstract = request.form.get('abstract')
+	teaser_image = request.files.get('teaser_image')
+	authors = request.form.get('authors')
+	link_pdf1 = request.form.get('link_pdf1')
+	# link_pdf2 = request.form.get('link_pdf2')
+	link_video = request.form.get('link_video')
+	link_source = request.form.get('link_source')
+	link_url = request.form.get('link_url')
+	# link_etc = request.form.get('link_etc')
+	# is_activated = request.form.get('is_activated')
+	show = request.form.get('show') != None
 	
-	print('admin_publication_new(), title: %s, conference: %s' % (title, conference))
+	print('admin_publication_new(), title: %s, description: %s' % (title, description))
 
-	# db_wrapper.insert_publication(title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
-	db_wrapper.insert_publication(title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url)
+	# db_wrapper.insert_publication(title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
+	db_wrapper.insert_publication(title=title, description=description, year=year, abstract=abstract, teaser_image=teaser_image, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
 
 	return redirect(url_for('admin_publication', page_num=1))
 
@@ -492,23 +620,26 @@ def admin_publication_edit():
 
 	print('admin_publication_edit()')
 	
-	publication_id = request.form['publication_id']
-	title = request.form['title']
-	conference = request.form['conference']
-	abstract = request.form['abstract']
-	teaser_image_path = request.form['teaser_image_path']
-	authors = request.form['authors']
-	link_pdf1 = request.form['link_pdf1']
-	# link_pdf2 = request.form['link_pdf2']
-	link_video = request.form['link_video']
-	link_source = request.form['link_source']
-	link_url = request.form['link_url']
-	# link_etc = request.form['link_etc']
+	publication_id = request.form.get('publication_id')
+	title = request.form.get('title')
+	description = request.form.get('description')
+	year = request.form.get('year')
+	abstract = request.form.get('abstract')
+	teaser_filename = request.form.get('teaser_filename')
+	teaser_image = request.files.get('teaser_image')
+	authors = request.form.get('authors')
+	link_pdf1 = request.form.get('link_pdf1')
+	# link_pdf2 = request.form.get('link_pdf2')
+	link_video = request.form.get('link_video')
+	link_source = request.form.get('link_source')
+	link_url = request.form.get('link_url')
+	# link_etc = request.form.get('link_etc')
+	show = request.form.get('show') != None
 	
-	print('admin_publication_edit(), title: %s, conference: %s' % (title, conference))
+	print('admin_publication_edit(), title: %s, description: %s' % (title, description))
 
-	# db_wrapper.update_publication(publication_id=publication_id, title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
-	db_wrapper.update_publication(id=publication_id, title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url)
+	# db_wrapper.update_publication(publication_id=publication_id, title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
+	db_wrapper.update_publication(id=publication_id, title=title, description=description, year=year, abstract=abstract, teaser_filename=teaser_filename, teaser_image=teaser_image, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
 
 	return redirect(url_for('admin_publication', page_num=1))
 
@@ -518,11 +649,34 @@ def admin_publication_delete():
 
 	print('admin_publication_delete()')
 	
-	publication_id = request.form['publication_id']
+	publication_id = request.form.get('publication_id')
 	
 	print('admin_publication_delete(), publication_id: %s' % (publication_id))
 
 	db_wrapper.delete_publication(id=publication_id)
+
+	return redirect(url_for('admin_publication', page_num=1))
+
+@app.route('/admin_publication/admin_publication_arrow/<int:id>/<string:direction>')
+@flask_login.login_required
+def admin_publication_arrow(id, direction):
+
+	print('admin_publication_arrow(%d, %s)' % (id, direction))
+
+	if direction == 'up':
+		db_wrapper.publication_arrow_up(id = id)
+	else:
+		db_wrapper.publication_arrow_down(id = id)
+
+	return redirect(url_for('admin_publication', page_num=1))
+
+@app.route('/admin_publication/admin_publication_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_publication_toggle_show(id):
+
+	print('admin_publication_toggle_show(%d)' % (id))
+
+	db_wrapper.publication_toggle_show(id = id)
 
 	return redirect(url_for('admin_publication', page_num=1))
 
@@ -557,7 +711,7 @@ def request_loader(request):
 
     # DO NOT ever store passwords in plaintext and always compare password
     # hashes using constant-time comparison!
-    user.is_authenticated = request.form['pw'] == users[user_id]['pw']
+    user.is_authenticated = request.form.get('pw') == users[user_id]['pw']
 
     return user
 

@@ -72,11 +72,12 @@
                         			<thead>
 	                            		<tr role="row">
 	                            			<th><input type="checkbox" id="checkall" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" /></th>
+	                            			<th tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1">ID</th>
 		                            		<!-- <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending" style="width: 15%;">ShortTitle</th> -->
-		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 60%;">Title</th>
-		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Conference</th>
+		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 55%;">Title</th>
+		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Description</th>
 		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 15%;">Date</th>
-		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 10%;">Action</th>
+		                            		<th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 15%;">Actions</th>
 	                            		</tr>
                         			</thead>
                         			<tbody>
@@ -85,11 +86,21 @@
 
                         				<tr class="gradeA odd" role="row">
 											<td align="center"><input type="checkbox" class="checkthis"/></td>
+											<td align="center">{{item.id}}</td>
 											<td class="sorting_1">{{item.title}}</td>
-											<td class="center">{{item.conference}}</td>
+											<td class="center">{{item.description}}</td>
 											<td class="center">{{item.date}}</td>
 											<td align="center">
+												<a href={{ url_for('admin_publication_toggle_show', id=item.id) }} data-placement="top" data-toggle="tooltip" title="Show">
+													{% if item.show == True %}
+													<button class="btn btn-warning btn-xs" data-title="Show" data-toggle="modal" ><span class="glyphicon glyphicon-star"></span></button>
+													{% else %}
+													<button class="btn btn-default btn-xs" data-title="Show" data-toggle="modal" ><span class="glyphicon glyphicon-star-empty"></span></button>
+													{% endif %}
+												</a>
 												<a data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit_{{item.id}}" ><span class="glyphicon glyphicon-pencil"></span></button></a>
+												<a href={{ url_for('admin_publication_arrow', id=item.id, direction='up') }} data-placement="top" data-toggle="tooltip" title="Up"><button class="btn btn-success btn-xs" data-title="Up" data-toggle="modal" ><span class="glyphicon glyphicon-arrow-up"></span></button></a>
+												<a href={{ url_for('admin_publication_arrow', id=item.id, direction='down')}} data-placement="top" data-toggle="tooltip" title="Down"><button class="btn btn-success btn-xs" data-title="Down" data-toggle="modal"><span class="glyphicon glyphicon-arrow-down"></span></button></a>
     											<a data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete_{{item.id}}" ><span class="glyphicon glyphicon-trash"></span></button></a>
 											</td>
 										</tr>
@@ -146,7 +157,7 @@
 <div class="modal fade" id="new" tabindex="-1" role="dialog" aria-labelledby="new" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="new" role="form" method="post">
+			<form action="new" enctype="multipart/form-data" role="form" method="post">
 	  			<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<h4 class="modal-title custom_align" id="Heading">Create item detail</h4>
@@ -157,16 +168,21 @@
 	  					<input class="form-control" id="title" name="title" type="text" placeholder="Title">
 					</div>
 					<div class="form-group">
-	  					<label>Conference:</label>
-	  					<textarea rows="2" id="conference" name="conference" class="form-control" placeholder="Text"></textarea>
+	  					<label>Description:</label>
+	  					<textarea rows="2" id="description" name="description" class="form-control" placeholder="Text"></textarea>
+					</div>
+					<div class="form-group">
+	  					<label>Year:</label>
+	  					<input class="form-control" id="year" name="year" type="text" placeholder="Year">
 					</div>
 					<div class="form-group">
 	  					<label>Abstract:</label>
 	  					<textarea rows="2" id="abstract" name="abstract" class="form-control" placeholder="Abstract"></textarea>
 					</div>
 					<div class="form-group">
-	  					<label>Teaser image:</label>
-	  					<textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Bibtex text"></textarea>
+	  					<label>Teaser image: ../static/src/img/publications/</label>
+	  					<input type="file" id="teaser_image" name="teaser_image">
+	  					<!-- <textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Image path"></textarea> -->
 					</div>
 					<div class="form-group">
 	  					<label>Authors:</label>
@@ -188,6 +204,10 @@
 						<label>URL:</label>
 						<input class="form-control" id="link_url" name="link_url" type="text" placeholder="URL link">
 					</div>
+					<div class="form-group">
+						<label> Want to show this item on the main page?</label>
+						<input id="show" name="show" type="checkbox" value="show" checked>
+					</div>
 				</div>
 				<div class="modal-footer ">
 					<button type="submit" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Create</button>
@@ -201,7 +221,7 @@
 <div class="modal fade" id="edit_{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="edit" role="form" method="post">
+			<form action="edit" enctype="multipart/form-data" role="form" method="post">
 	  			<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					<h4 class="modal-title custom_align" id="Heading">Edit item detail</h4>
@@ -213,8 +233,12 @@
 	  					<input class="form-control" id="title" name="title" type="text" placeholder="Title" value="{{item.title}}">
 					</div>
 					<div class="form-group">
-	  					<label>Conference:</label>
-	  					<textarea rows="2" id="conference" name="conference" class="form-control" placeholder="Text">{{item.conference}}</textarea>
+	  					<label>Description:</label>
+	  					<textarea rows="2" id="description" name="description" class="form-control" placeholder="Text">{{item.description}}</textarea>
+					</div>
+					<div class="form-group">
+	  					<label>Year:</label>
+	  					<input class="form-control" id="year" name="year" type="text" placeholder="Year" value="{{item.year}}">
 					</div>
 					<div class="form-group">
 	  					<label>Abstract:</label>
@@ -222,7 +246,9 @@
 					</div>
 					<div class="form-group">
 	  					<label>Teaser image:</label>
-	  					<textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Bibtex text">{{item.teaser_image_path}}</textarea>
+	  					<input class="form-control" name="teaser_filename" id="teaser_filename" placeholder="Input member filename." value="{{item.teaser_image_path}}">
+	  					<input type="file" id="teaser_image" name="teaser_image">
+	  					<!-- <textarea rows="2" id="teaser_image_path" name="teaser_image_path" class="form-control" placeholder="Bibtex text">{{item.teaser_image_path}}</textarea> -->
 					</div>
 					<div class="form-group">
 	  					<label>Authors:</label>
@@ -243,6 +269,14 @@
 					<div class="form-group">
 						<label>URL:</label>
 						<input class="form-control" id="link_url" name="link_url" type="text" placeholder="URL link" value="{{item.link_url}}">
+					</div>
+					<div class="form-group">
+						<label> Want to show this item on the main page?</label>
+						{% if item.show == True %}
+						<input id="show" name="show" type="checkbox" value="" checked>
+						{% else %}
+						<input id="show" name="show" type="checkbox" value="">
+						{% endif %}
 					</div>
 				</div>
 				<div class="modal-footer ">

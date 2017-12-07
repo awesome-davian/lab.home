@@ -1,17 +1,36 @@
 <section id="teaching" class="features">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="section-heading">
-                    <h2>Teaching</h2>
-                    <p class="text-muted">teaching</p>
-                    <hr>
+            <!-- <div class="col-lg-8 col-md-offset-2 text-center"> -->
+            <div class="col-lg-12">
+                <h2 class="section-heading text-center">Teaching</h2>
+                    <!-- <h2>Teaching</h2> -->
+
+                    <!-- <div class="col-md-8 col-md-offset-2"> -->
+                        {% for item in teaching %}
+                            <span class="teaching-list-element">
+                                {{item.when}}, {{item.code}}: {{item.name}} <a href="{{item.video}}"> [VIDEO]</a> <br>
+                                <!-- <button type="button" class="btn btn-link teaching-list-element" href="{{item.video}}">Video</button>   -->
+                            </span>
+                        {% endfor %}
+                    <!-- </div> -->
+
+                    <!-- <p class="text-muted">teaching</p> -->
+                    <!-- <hr> -->
                 </div>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row"> -->
+
+            <!-- <div class="col-md-8 col-md-offset-2">
+                {% for item in teaching %}
+                    <span class="teaching-list-element">
+                        {{item.when}}, {{item.code}}: {{item.name}} <br>
+                    </span>
+                {% endfor %}
+            </div> -->
             
-            <div class="col-md-12">
+            <!-- <div class="col-md-12">
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="teaching-list-body">
@@ -24,6 +43,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> -->
+        <!-- </div> -->
 </section>

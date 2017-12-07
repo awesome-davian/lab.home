@@ -1,0 +1,21 @@
+<section id="news" class="download bg-primary text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h2 class="section-heading">News</h2>
+
+                <!-- <p>{{about_text}}</p> -->
+                <!-- <span class="free-text-span"> -->
+                    <!-- 이 상태로 스타일을 주게되면
+                    띄어쓰기나 이런것도 알아서 잘 되고 단어 단위로 끊겨서 무리없이 아무런 내용이나 적어도 좋습니다.
+                     -->
+                {% for item in news %}
+                    <span class="news-list-element">
+                        {{item.contents}}, {{item.date.strftime('%d %b %Y')}} <br>
+                    </span>
+                {% endfor %}
+                
+            </div>
+        </div>
+    </div>
+</section>

@@ -13,15 +13,15 @@
     width:100%;
     list-style-type: none;
     display:block;
-
 }
 .teaching-list-element{
-    font-size: 15px;
-    font-weight: bold;
+    font-size: 25px;
+    /*font-weight: bold;*/
     cursor: pointer;
+    text-align: left;
 }
 .img-publication{
-    width:40%;
+    width:15%;
     float:left;
 }
 .publication-main{
@@ -29,6 +29,11 @@
     float:left;
     text-align: left;
     padding:5px 20px;
+}
+.news-list-element{
+    font-size: 25px;
+    cursor: pointer;
+    text-align: left;
 }
 .free-text-span{
     word-wrap: break-word;white-space:pre-line;word-break:keep-all;

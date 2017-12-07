@@ -3,9 +3,9 @@ from app import app, db, models
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
-def update_lab_info(in_desc, in_sub_desc, in_bg_image):
+def update_lab_info(desc, sub_desc, bg_filename, bg_image):
 
-	bg_name = secure_filename(in_bg_image.filename)
+	bg_name = secure_filename(bg_image.filename)
 
 	if bg_name != '':
 		
@@ -13,71 +13,138 @@ def update_lab_info(in_desc, in_sub_desc, in_bg_image):
 		bg_path = os.path.join(bg_path, bg_name)
 		
 		print(bg_path)
-		in_bg_image.save(bg_path)
+		bg_image.save(bg_path)
+	else:
+		if bg_filename != '':
+			bg_name = bg_filename
+		else:
+			# TODO: input default file
+			bg_name = ''
 
 	labinfo = models.LabInfo.query.filter_by(id = 1)
 	if labinfo != None:
-		labinfo.update(dict(description=in_desc))
-		labinfo.update(dict(sub_description=in_sub_desc))
-		if bg_name != '':
-			labinfo.update(dict(background_img_path=bg_path))
+		if labinfo.count() != 0:
+			labinfo.update(dict(description=desc))
+			labinfo.update(dict(sub_description=sub_desc))
+			if bg_name != '':
+				labinfo.update(dict(background_img_path=bg_name))
+		else:
+			labinfo = models.LabInfo(name='DAVIAN', description=desc, sub_description=sub_desc, background_img_path=bg_name)
+			db.session.add(labinfo)
+
 		db.session.commit()
 	else:
 		print('labinfo == None')
 
-def update_about(in_text, in_sub_text):
+def update_about(text, sub_text):
 
 	about = models.About.query.filter_by(id = 1)
 	print(about)
 	if about != None:
-		print('about != None')
-		about.update(dict(text=in_text))
-		about.update(dict(sub_text=in_sub_text))
+		if about.count() != 0:
+			about.update(dict(text=text))
+			about.update(dict(sub_text=sub_text))
+		else:
+			about = models.About(text=text, sub_text=sub_text)
+			db.session.add(about)
 		
 		db.session.commit()
 	else:
 		print('about == None')
 
-def insert_news(in_news_title, in_news_contents, in_news_date):
+def insert_news(title, contents, date, show):
 
-	date_in_python = datetime.strptime(in_news_date, '%Y-%m-%d')
+	date_python = datetime.strptime(date, '%Y-%m-%d')
 
-	news = models.News(title=in_news_title, contents=in_news_contents, date=date_in_python)
+	news = models.News(title=title, contents=contents, date=date_python, show=show)
 	db.session.add(news)
 	db.session.commit()
 
-def update_news(in_news_id, in_news_title, in_news_contents, in_news_date):
+def update_news(id, title, contents, date, show):
 
-	date_in_python = datetime.strptime(in_news_date, '%Y-%m-%d')
+	date_python = datetime.strptime(date, '%Y-%m-%d')
 
-	news = models.News.query.filter_by(id=int(in_news_id))
+	news = models.News.query.filter_by(id=int(id))
 	print(news)
 	if news != None:
 		print('news != None')
-		news.update(dict(title=in_news_title))
-		news.update(dict(contents=in_news_contents))
-		news.update(dict(date=date_in_python))
+		news.update(dict(title=title))
+		news.update(dict(contents=contents))
+		news.update(dict(date=date_python))
+		news.update(dict(show=show))
 		
 		db.session.commit()
 	else:
 		print('news == None')
 
-def delete_news(in_news_id):
+def delete_news(id):
 
-	news = models.News.query.filter_by(id=int(in_news_id)).first()
+	news = models.News.query.filter_by(id=int(id)).first()
 	if news != None:
 		db.session.delete(news)
 		db.session.commit()
 	else:
 		print('news == None')
 
-def insert_research(title, text1, text2, teaser_image_path, member, publications, is_activated):
+def news_arrow_up(id):
 
-	research = models.Research(title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated)
+	idx = int(id)
+	idx_next = idx+1
+	temp = -1
+
+	news = models.News.query.filter_by(id=idx).first()
+	news_next = models.News.query.filter_by(id=idx_next).first()
+
+	if news != None and news_next != None:
+		models.News.query.filter_by(id=idx_next).update(dict(id=temp))
+		models.News.query.filter_by(id=idx).update(dict(id=idx_next))
+		models.News.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('news == None || news_next == None')
+
+def news_arrow_down(id):
+
+	idx = int(id)
+	idx_prev = idx-1
+	temp = -1
+
+	news = models.News.query.filter_by(id=idx).first()
+	news_prev = models.News.query.filter_by(id=idx_prev).first()
+
+	if news != None and news_prev != None:
+		models.News.query.filter_by(id=idx_prev).update(dict(id=temp))
+		models.News.query.filter_by(id=idx).update(dict(id=idx_prev))
+		models.News.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('news == None || news_prev == None')
+
+def news_toggle_show(id):
+
+	idx = int(id)
+	news = models.News.query.filter_by(id=idx).first()
+
+	print(news.show)
+
+	if news != None:
+		models.News.query.filter_by(id=idx).update(dict(show = (news.show == False)))
+		db.session.commit()
+	else:
+		print('news == None')
+
+
+def insert_research(title, text1, text2, teaser_image_path, member, publications, is_activated, show):
+
+	research = models.Research(title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 	db.session.add(research)
 	db.session.commit()
 
-def update_research(id, title, text1, text2, teaser_image_path, member, publications, is_activated):
+def update_research(id, title, text1, text2, teaser_image_path, member, publications, is_activated, show):
 
 	research = models.Research.query.filter_by(id=int(id))
 	# print(research)
@@ -90,6 +157,7 @@ def update_research(id, title, text1, text2, teaser_image_path, member, publicat
 		research.update(dict(member=member))
 		research.update(dict(publications=publications))
 		research.update(dict(is_activated=is_activated))
+		research.update(dict(show=show))
 		
 		db.session.commit()
 	else:
@@ -104,38 +172,104 @@ def delete_research(id):
 	else:
 		print('research == None')
 
-def insert_member(name, email, student_id, course, picture_path, introduction, bd, md, career1, career2, career3, link_github, link_facebook, link_twitter, link_linkedin, link1, link2, link3, link4):
+def research_arrow_up(id):
 
-	member = models.Member(name=name, email=email, student_id=student_id, course=course, picture_path=picture_path, introduction=introduction, bd=bd, md=md, career1=career1, career2=career2, career3=career3, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, link1=link1, link2=link2, link3=link3, link4=link4)
+	idx = int(id)
+	idx_next = idx+1
+	temp = -1
+
+	research = models.Research.query.filter_by(id=idx).first()
+	research_next = models.Research.query.filter_by(id=idx_next).first()
+
+	if research != None and research_next != None:
+		models.Research.query.filter_by(id=idx_next).update(dict(id=temp))
+		models.Research.query.filter_by(id=idx).update(dict(id=idx_next))
+		models.Research.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('research == None || research_next == None')
+
+def research_arrow_down(id):
+
+	idx = int(id)
+	idx_prev = idx-1
+	temp = -1
+
+	research = models.Research.query.filter_by(id=idx).first()
+	research_prev = models.Research.query.filter_by(id=idx_prev).first()
+
+	if research != None and research_prev != None:
+		models.Research.query.filter_by(id=idx_prev).update(dict(id=temp))
+		models.Research.query.filter_by(id=idx).update(dict(id=idx_prev))
+		models.Research.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('research == None || research_prev == None')
+
+def research_toggle_show(id):
+
+	idx = int(id)
+	item = models.Research.query.filter_by(id=idx).first()
+
+	print(item.show)
+
+	if item != None:
+		models.Research.query.filter_by(id=idx).update(dict(show = (item.show == False)))
+		db.session.commit()
+	else:
+		print('item == None')
+
+def insert_member(name, email, student_id, course, picture, interest, bs, ms, introduction, link_github, link_facebook, link_twitter, link_linkedin, show):
+
+	picture_name = secure_filename(picture.filename)
+	if picture_name != '':
+		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
+		picture_path = os.path.join(picture_path, picture_name)
+		
+		print(picture_path)
+		picture.save(picture_path)
+
+	member = models.Member(name=name, email=email, student_id=student_id, course=course, picture_path=picture_name, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 	db.session.add(member)
 	db.session.commit()
 
-def update_member(id, name, email, student_id, course, picture_path, introduction, bd, md, career1, career2, career3, link_github, link_facebook, link_twitter, link_linkedin, link1, link2, link3, link4):
+def update_member(id, name, email, student_id, course, picture_filename, picture, interest, bs, ms, introduction, link_github, link_facebook, link_twitter, link_linkedin, show):
+
+	picture_name = secure_filename(picture.filename)
+	if picture_name != '':
+		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
+		picture_path = os.path.join(picture_path, picture_name)
+		
+		print(picture_path)
+		picture.save(picture_path)
+	else:
+		if picture_filename != '':
+			picture_name = picture_filename
+		else:
+			picture_name = ''
 
 	member = models.Member.query.filter_by(id=int(id))
 	
 	if member != None:
 		print('member != None')
-		member.update(dict(title=title))
 		member.update(dict(name=name))
 		member.update(dict(email=email))
 		member.update(dict(student_id=student_id))
 		member.update(dict(course=course))
-		member.update(dict(picture_path=picture_path))
+		member.update(dict(picture_path=picture_name))
+		member.update(dict(interest=interest))
+		member.update(dict(bs=bs))
+		member.update(dict(ms=ms))
 		member.update(dict(introduction=introduction))
-		member.update(dict(bd=bd))
-		member.update(dict(md=md))
-		member.update(dict(career1=career1))
-		member.update(dict(career2=career2))
-		member.update(dict(career3=career3))
 		member.update(dict(link_github=link_github))
 		member.update(dict(link_facebook=link_facebook))
 		member.update(dict(link_twitter=link_twitter))
 		member.update(dict(link_linkedin=link_linkedin))
-		member.update(dict(link1=link1))
-		member.update(dict(link2=link2))
-		member.update(dict(link3=link3))
-		member.update(dict(link4=link4))
+		member.update(dict(show=show))
 
 		db.session.commit()
 	else:
@@ -150,13 +284,64 @@ def delete_member(id):
 	else:
 		print('member == None')
 
-def insert_teaching(code, name, description, when, target_audience, link1, link2):
+def member_arrow_up(id):
 
-	teaching = models.Teaching(code=code, name=name, description=description, when=when, target_audience=target_audience, link1=link1, link2=link2)
+	idx = int(id)
+	idx_next = idx+1
+	temp = -1
+
+	member = models.Member.query.filter_by(id=idx).first()
+	member_next = models.Member.query.filter_by(id=idx_next).first()
+
+	if member != None and member_next != None:
+		models.Member.query.filter_by(id=idx_next).update(dict(id=temp))
+		models.Member.query.filter_by(id=idx).update(dict(id=idx_next))
+		models.Member.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('member == None || member_next == None')
+
+def member_arrow_down(id):
+
+	idx = int(id)
+	idx_prev = idx-1
+	temp = -1
+
+	member = models.Member.query.filter_by(id=idx).first()
+	member_prev = models.Member.query.filter_by(id=idx_prev).first()
+
+	if member != None and member_prev != None:
+		models.Member.query.filter_by(id=idx_prev).update(dict(id=temp))
+		models.Member.query.filter_by(id=idx).update(dict(id=idx_prev))
+		models.Member.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('member == None || member_prev == None')
+
+def member_toggle_show(id):
+
+	idx = int(id)
+	item = models.Member.query.filter_by(id=idx).first()
+
+	print(item.show)
+
+	if item != None:
+		models.Member.query.filter_by(id=idx).update(dict(show = (item.show == False)))
+		db.session.commit()
+	else:
+		print('item == None')
+
+def insert_teaching(code, name, description, when, target_audience, link, video, show):
+
+	teaching = models.Teaching(code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 	db.session.add(teaching)
 	db.session.commit()
 
-def update_teaching(id, code, name, description, when, target_audience, link1, link2):
+def update_teaching(id, code, name, description, when, target_audience, link, video, show):
 
 	teaching = models.Teaching.query.filter_by(id=int(id))
 	
@@ -167,8 +352,9 @@ def update_teaching(id, code, name, description, when, target_audience, link1, l
 		teaching.update(dict(description=description))
 		teaching.update(dict(when=when))
 		teaching.update(dict(target_audience=target_audience))
-		teaching.update(dict(link1=link1))
-		teaching.update(dict(link2=link2))
+		teaching.update(dict(link=link))
+		teaching.update(dict(video=video))
+		teaching.update(dict(show=show))
 
 		db.session.commit()
 	else:
@@ -183,25 +369,98 @@ def delete_teaching(id):
 	else:
 		print('teaching == None')
 
-# def insert_publication(title, conference, abstract, teaser_image_path, authors, link_pdf1, link_pdf2, link_video, link_source, link_url, link_etc):
-def insert_publication(title, conference, abstract, teaser_image_path, authors, link_pdf1, link_video, link_source, link_url):
+def teaching_arrow_up(id):
 
-	# publications = models.Publications(title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
-	publications = models.Publications(title=title, conference=conference, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url)
+	idx = int(id)
+	idx_next = idx+1
+	temp = -1
+
+	teaching = models.Teaching.query.filter_by(id=idx).first()
+	teaching_next = models.Teaching.query.filter_by(id=idx_next).first()
+
+	if teaching != None and teaching_next != None:
+		models.Teaching.query.filter_by(id=idx_next).update(dict(id=temp))
+		models.Teaching.query.filter_by(id=idx).update(dict(id=idx_next))
+		models.Teaching.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('teaching == None || teaching_next == None')
+
+def teaching_arrow_down(id):
+
+	idx = int(id)
+	idx_prev = idx-1
+	temp = -1
+
+	teaching = models.Teaching.query.filter_by(id=idx).first()
+	teaching_prev = models.Teaching.query.filter_by(id=idx_prev).first()
+
+	if teaching != None and teaching_prev != None:
+		models.Teaching.query.filter_by(id=idx_prev).update(dict(id=temp))
+		models.Teaching.query.filter_by(id=idx).update(dict(id=idx_prev))
+		models.Teaching.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('teaching == None || teaching_prev == None')
+
+def teaching_toggle_show(id):
+
+	idx = int(id)
+	item = models.Teaching.query.filter_by(id=idx).first()
+
+	print(item.show)
+
+	if item != None:
+		models.Teaching.query.filter_by(id=idx).update(dict(show = (item.show == False)))
+		db.session.commit()
+	else:
+		print('item == None')
+
+# def insert_publication(title, description, abstract, teaser_image_path, authors, link_pdf1, link_pdf2, link_video, link_source, link_url, link_etc):
+def insert_publication(title, description, year, abstract, teaser_image, authors, link_pdf1, link_video, link_source, link_url, show):
+
+	teaser_image_name = secure_filename(teaser_image.filename)
+	if teaser_image_name != '':
+		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
+		teaser_path = os.path.join(teaser_path, teaser_image_name)
+		
+		print(teaser_path)
+		teaser_image.save(teaser_path)
+
+	# publications = models.Publications(title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
+	publications = models.Publications(title=title, description=description, year=year, abstract=abstract, teaser_image_path=teaser_image_name, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
 	db.session.add(publications)
 	db.session.commit()
 
-# def update_publication(id, title, conference, abstract, teaser_image_path, authors, link_pdf1, link_pdf2, link_video, link_source, link_url, link_etc):
-def update_publication(id, title, conference, abstract, teaser_image_path, authors, link_pdf1, link_video, link_source, link_url):
+# def update_publication(id, title, description, abstract, teaser_image_path, authors, link_pdf1, link_pdf2, link_video, link_source, link_url, link_etc):
+def update_publication(id, title, description, year, abstract, teaser_filename, teaser_image, authors, link_pdf1, link_video, link_source, link_url, show):
+
+	teaser_image_name = secure_filename(teaser_image.filename)
+	if teaser_image_name != '':
+		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
+		teaser_path = os.path.join(teaser_path, teaser_image_name)
+		
+		print(teaser_path)
+		teaser_image.save(teaser_path)
+	else:
+		if teaser_filename != '':
+			teaser_image_name = teaser_filename
+		else:
+			teaser_image_name = ''
 
 	publications = models.Publications.query.filter_by(id=int(id))
 	
 	if publications != None:
 		print('publications != None')
 		publications.update(dict(title=title))
-		publications.update(dict(conference=conference))
+		publications.update(dict(description=description))
+		publications.update(dict(year=year))
 		publications.update(dict(abstract=abstract))
-		publications.update(dict(teaser_image_path=teaser_image_path))
+		publications.update(dict(teaser_image_path=teaser_image_name))
 		publications.update(dict(authors=authors))
 		publications.update(dict(link_pdf1=link_pdf1))
 		# publications.update(dict(link_pdf2=link_pdf2))
@@ -209,6 +468,7 @@ def update_publication(id, title, conference, abstract, teaser_image_path, autho
 		publications.update(dict(link_source=link_source))
 		publications.update(dict(link_url=link_url))
 		# publications.update(dict(link_etc=link_etc))
+		publications.update(dict(show=show))
 		
 		db.session.commit()
 	else:
@@ -223,4 +483,53 @@ def delete_publication(id):
 	else:
 		print('publications == None')
 
+def publication_arrow_up(id):
 
+	idx = int(id)
+	idx_next = idx+1
+	temp = -1
+
+	publication = models.publication.query.filter_by(id=idx).first()
+	publication_next = models.publication.query.filter_by(id=idx_next).first()
+
+	if publication != None and publication_next != None:
+		models.publication.query.filter_by(id=idx_next).update(dict(id=temp))
+		models.publication.query.filter_by(id=idx).update(dict(id=idx_next))
+		models.publication.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('publication == None || publication_next == None')
+
+def publication_arrow_down(id):
+
+	idx = int(id)
+	idx_prev = idx-1
+	temp = -1
+
+	publication = models.Publications.query.filter_by(id=idx).first()
+	publication_prev = models.Publications.query.filter_by(id=idx_prev).first()
+
+	if publication != None and publication_prev != None:
+		models.Publications.query.filter_by(id=idx_prev).update(dict(id=temp))
+		models.Publications.query.filter_by(id=idx).update(dict(id=idx_prev))
+		models.Publications.query.filter_by(id=temp).update(dict(id=idx))
+
+		db.session.commit()
+
+	else:
+		print('publication == None || publication_prev == None')
+
+def publication_toggle_show(id):
+
+	idx = int(id)
+	item = models.Publications.query.filter_by(id=idx).first()
+
+	print(item.show)
+
+	if item != None:
+		models.Publications.query.filter_by(id=idx).update(dict(show = (item.show == False)))
+		db.session.commit()
+	else:
+		print('item == None')

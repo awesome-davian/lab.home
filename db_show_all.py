@@ -54,4 +54,11 @@ for item in news_page:
 	print('Title:\t\t%s' % (item.title))
 	print('Contents:\t%s' % (item.contents))
 	print('Date:\t\t%s' % (item.date))
-	
+
+# Teaching
+print('DB: Teaching ---------------------------------------------')
+info = models.Teaching.query.all()
+for item in info:
+	print('ID:\t\t%d' % (item.id))
+	print('code:\t\t%s' % (item.code))
+	print('name:\t\t%s' % (item.name))

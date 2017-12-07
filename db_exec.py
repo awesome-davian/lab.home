@@ -53,12 +53,34 @@ from app import db, models
 #-------------------------------------------------------------------
 #- display a About information
 #-------------------------------------------------------------------
-info = models.About.query.filter_by(id = 1).first()
-if info == None:
-	print('None')
-else:
-	print(info.text)
-	print(info.sub_text)
+# info = models.About.query.filter_by(id = 1).first()
+# if info == None:
+# 	print('None')
+# else:
+# 	print(info.text)
+# 	print(info.sub_text)
 
 # info = models.LabInfo.query.filter_by(id = 1).update(dict(description='Data and Visual Analytics Lab.'))
 # db.session.commit()
+
+#-------------------------------------------------------------------
+#- ID modification
+#-------------------------------------------------------------------
+# info = models.News.query.filter_by(id=-1).update(dict(id=10))
+# db.session.commit()
+
+#-------------------------------------------------------------------
+#- Remove All items
+#-------------------------------------------------------------------
+
+# models.About.query.delete()
+# models.About.query.delete()
+# models.About.query.delete()
+# models.About.query.delete()
+# models.About.query.delete()
+meta = db.metadata
+for table in reversed(meta.sorted_tables):
+	if table.name != 'user' and table.name != 'post':
+		print('Clear table %s' % table.name)
+		db.session.execute(table.delete())
+db.session.commit()

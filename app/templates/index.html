@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Awesome DAVIAN</title>
+    <title>Data and Visual Analytics Lab.</title>
 
     <!-- Bootstrap Core CSS -->
     <!-- <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -44,12 +44,14 @@
 
     {% include "menu.html" %}
     {% include "title.html" %}
-    {% include "about.html" %}
+    <!-- {# include "about.html" #} -->
+    {% include "news.html" %}
     {% include "people.html" %}
-    {% include "research.html" %}
-    {% include "teaching.html" %}
+    <!-- {# include "research.html" #} -->
     {% include "publications.html" %}
-    <!-- {% include "links.html" %} -->
+    {% include "teaching.html" %}
+    
+    <!-- {# include "links.html" #} -->
     {% include "calendar.html" %}
     {% include "map.html" %}
 
@@ -102,11 +104,6 @@
             that.on('mouseleave', onMapMouseleaveHandler);
         }
         // Enable map zooming with mouse scroll when the user clicks the map
-    $('.maps.embed-container').on('click', onMapClickHandler);
-    function update_member(num){
-        document.getElementById('member-text').innerHTML=document.getElementById('member-text'+num).value;
-        document.getElementById('member-name').innerHTML=document.getElementById('member-name'+num).innerHTML;
-    }
     </script>
 </body>
 
@@ -246,3 +243,7 @@
 
 {% include "publications_model.html" %}
 </html>
+
+<script type="text/javascript">
+    $('.maps.embed-container').on('click', onMapClickHandler);
+</script>
