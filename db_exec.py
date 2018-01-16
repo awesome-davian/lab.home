@@ -74,13 +74,10 @@ from app import db, models
 #-------------------------------------------------------------------
 
 # models.About.query.delete()
-# models.About.query.delete()
-# models.About.query.delete()
-# models.About.query.delete()
-# models.About.query.delete()
+
 meta = db.metadata
 for table in reversed(meta.sorted_tables):
-	if table.name != 'user' and table.name != 'post':
+	if table.name != 'user' and table.name != 'post' and table.name != 'lab_info':
 		print('Clear table %s' % table.name)
 		db.session.execute(table.delete())
 db.session.commit()

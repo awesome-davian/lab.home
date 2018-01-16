@@ -168,11 +168,12 @@ header {
   width: 100%;
   min-height: auto;
   overflow-y: hidden;
-  background: url("../src/img/bg-pattern.png"), #7b4397;
+  background-size: contain;
+  /*background: url("../src/img/bg-pattern.png"), #7b4397;*/
   /* fallback for old browsers */
-  background: url("../src/img/bg-pattern.png"), -webkit-linear-gradient(to left, #7b4397, #dc2430);
+  /*background: url("../src/img/bg-pattern.png"), -webkit-linear-gradient(to left, #7b4397, #dc2430);*/
   /* Chrome 10-25, Safari 5.1-6 */
-  background: url("../src/img/bg-pattern.png"), linear-gradient(to left, #7b4397, #dc2430);
+  /*background: url("../src/img/bg-pattern.png"), linear-gradient(to left, #7b4397, #dc2430);*/
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: white;
 }
@@ -242,7 +243,7 @@ section h2 {
   font-size: 50px;
 }
 section.download {
-  padding: 150px 0;
+  padding: 100px 0;
   /*position: relative;*/
 }
 section.download h2 {
@@ -364,8 +365,12 @@ section.map .badges .badge-link img {
     font-size: 70px;
   }
 }
+section.features {
+  padding: 100px 0;
+  /*position: relative;*/
+}
 section.features .section-heading {
-  margin-bottom: 100px;
+  margin-bottom: 20px;
 }
 section.features .section-heading h2 {
   margin-top: 0;
@@ -482,13 +487,14 @@ section.contact ul.list-social li.social-google-plus a:hover {
   background-color: #d73925;
 }
 footer {
-  background-color: #222222;
+  background-color: #ffffff;
   padding: 25px 0;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 1.0);
+  /*color: rgba(255, 255, 255, 0.3);*/
   text-align: center;
 }
 footer p {
-  font-size: 12px;
+  font-size: 15px;
   margin: 0;
 }
 footer ul {

@@ -29,7 +29,8 @@ class Post(db.Model):
 		return '<Post %r>' % (self.body)
 
 class LabInfo(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
+	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+	sn = db.Column(db.Integer, index=True, unique=True, autoincrement=True)
 	name = db.Column(db.String(LEN_NAME), index=True, unique=True)
 	description = db.Column(db.String(LEN_TEXT), index=True, unique=True)
 	description_ko = db.Column(db.String(LEN_TEXT), index=True, unique=True)
@@ -42,6 +43,7 @@ class LabInfo(db.Model):
 
 class About(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	text = db.Column(db.String(LEN_TEXT), index=True, unique=True)
 	text_ko = db.Column(db.String(LEN_TEXT), index=True, unique=True)
 	sub_text = db.Column(db.String(LEN_TEXT), index=True, unique=True)
@@ -52,6 +54,7 @@ class About(db.Model):
 
 class News(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	title = db.Column(db.String(LEN_TITLE), index=True, unique=True)
 	contents = db.Column(db.String(LEN_TEXT), index=True, unique=True)
 	date = db.Column(db.DateTime, index=True, unique=True)
@@ -62,6 +65,7 @@ class News(db.Model):
 
 class Research(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	title = db.Column(db.String(LEN_TITLE), index=True, unique=True)
 	title_ko = db.Column(db.String(LEN_TITLE), index=True, unique=True)
 	text1 = db.Column(db.String(LEN_TEXT), index=True, unique=True)
@@ -79,6 +83,7 @@ class Research(db.Model):
 
 class Member(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	name = db.Column(db.String(LEN_NAME), index=True, unique=True)
 	name_ko = db.Column(db.String(LEN_NAME), index=True, unique=True)
 	email = db.Column(db.String(LEN_EMAIL), index=True, unique=True)
@@ -92,6 +97,7 @@ class Member(db.Model):
 	career1 = db.Column(db.String(LEN_SHORT_TEXT), index=True, unique=True)
 	career2 = db.Column(db.String(LEN_SHORT_TEXT), index=True, unique=True)
 	career3 = db.Column(db.String(LEN_SHORT_TEXT), index=True, unique=True)
+	link_homepage = db.Column(db.String(LEN_LINK), index=True, unique=True)
 	link_github = db.Column(db.String(LEN_LINK), index=True, unique=True)
 	link_facebook = db.Column(db.String(LEN_LINK), index=True, unique=True)
 	link_twitter = db.Column(db.String(LEN_LINK), index=True, unique=True)
@@ -107,6 +113,7 @@ class Member(db.Model):
 
 class Teaching(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	code = db.Column(db.String(LEN_SHORT_TEXT), index=True, unique=True)
 	name = db.Column(db.String(LEN_TITLE), index=True, unique=True)
 	name_ko = db.Column(db.String(LEN_TITLE), index=True, unique=True)
@@ -123,6 +130,7 @@ class Teaching(db.Model):
 
 class Publications(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
 	title = db.Column(db.String(LEN_TITLE), index=True, unique=True)
 	description = db.Column(db.String(LEN_LONG_TEXT), index=True, unique=True)
 	abstract = db.Column(db.String(LEN_TEXT), index=True, unique=True)
@@ -140,3 +148,17 @@ class Publications(db.Model):
 
 	def __repr__(self):
 		return '<Publications %r>' % (self.title)
+
+class Links(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	sn = db.Column(db.Integer, unique=True)
+	name = db.Column(db.String(LEN_TITLE), index=True, unique=True)
+	description = db.Column(db.String(LEN_LONG_TEXT), index=True, unique=True)
+	image_path = db.Column(db.String(LEN_PATH), index=True, unique=True)	
+	link_url = db.Column(db.String(LEN_LINK), index=True, unique=True)
+	link_etc = db.Column(db.String(LEN_LINK), index=True, unique=True)
+	is_activated = db.Column(db.Boolean, index=True, unique=True)
+	show = db.Column(db.Boolean, index=True, unique=True)
+
+	def __repr__(self):
+		return '<Links %r>' % (self.title)

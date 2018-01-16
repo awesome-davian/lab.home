@@ -1,11 +1,11 @@
-<section id="publication" class="download bg-primary text-center">
+<section id="publication" class="features bg-primary text-center">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="section-heading">
                     <h2>Publications</h2>
-                    <p>The research area that DAVIAN is interested in.</p>
-                    <hr>
+                    <!-- <p>The research area that DAVIAN is interested in.</p> -->
+                    <!-- <hr> -->
                 </div>
             </div>
         </div>
@@ -32,12 +32,13 @@
                         {% for item in publications %}
                         <div class="col-md-12">
                             <div class="feature-item">
-                                <a href="#publication2" class="portfolio-link" data-toggle="modal">
+                                <a href="#publication_detail_{{item.id}}" class="portfolio-link" data-toggle="modal">
                                     <img src={{ url_for('static', filename='src/img/publications/'+item.teaser_image_path)}} class="img-publication" alt="">
                                 </a>
                                 <div class="publication-main">
-                                    <h3>{{item.title}}</h3>
-                                    <p class="text-muted">{{item.description}}</p>
+                                    <h-publication-title>{{item.title}}</h-publication-title>
+                                    <p class="text-muted">{{item.authors}}<br>
+                                    {{item.description}}</p>
                                 </div>
                             </div>
                         </div>
@@ -72,3 +73,42 @@
             </div>
     </div>
 </section>
+{% for item in publications %}
+<div class="portfolio-modal modal fade" id="publication_detail_{{item.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="research-body">
+                            <!-- Project Details Go Here -->
+                            <h2>{{item.title}}</h2>
+                            <!-- <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p> -->
+                            <img class="img-responsive img-centered" src={{ url_for('static', filename='src/img/publications/'+item.teaser_image_path)}} alt="">
+                            <p>{{item.abstract}}</p>
+                            <p>
+                            <!--     <strong>Want these icons in this portfolio item sample? </strong>You can download 60 of them for free, courtesy of <a href="https://getdpd.com/cart/hoplink/18076?referrer=bvbo4kax5k8ogc">RoundIcons.com</a>, or you can purchase the 1500 icon set <a href="https://getdpd.com/cart/hoplink/18076?referrer=bvbo4kax5k8ogc">here</a>. -->
+                                {{item.description}}
+                            </p>
+                            <p>
+                                {{item.authors}}
+                            </p>
+                            <ul class="list-inline">
+                                <li>Year: {{item.year}}</li>
+                                <!-- <li>Client: Round Icons</li>
+                                <li>Category: Graphic Design</li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}

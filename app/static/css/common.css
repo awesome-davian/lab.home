@@ -3,6 +3,28 @@
     height: 200px;
     display: inline-block;
     border-radius: 50%;
+    background-size: cover !important;
+}
+.link-pic {
+    width: 130px;
+    height: 130px;
+    display: inline-block;
+    border-radius: 50%;
+    background-size: cover !important;
+}
+.logo-pic {
+    width: 250px;
+    height: 81px;
+
+    display: block; /*for the img inside your div */  
+    margin-left: auto;
+    margin-right: auto;
+    /*border-radius: 50%;*/
+    background-size: cover !important;
+}
+.logo {
+    text-align: center;
+    margin-bottom: 10px;
 }
 .research-body{
     position: relative;
@@ -21,20 +43,33 @@
     text-align: left;
 }
 .img-publication{
-    width:15%;
+    width:10%;
     float:left;
 }
 .publication-main{
-    width:60%;
+    width:90%;
     float:left;
     text-align: left;
-    padding:5px 20px;
+    padding:0px 20px;
 }
 .news-list-element{
-    font-size: 25px;
+    font-size: 20px;
     cursor: pointer;
     text-align: left;
 }
 .free-text-span{
-    word-wrap: break-word;white-space:pre-line;word-break:keep-all;
+    word-wrap: break-word;
+    white-space:pre-line;
+    word-break:keep-all;
+}
+h-publication-title {
+    font-family: 'Catamaran', 'Helvetica', 'Arial', 'sans-serif';
+    font-weight: 200;
+    letter-spacing: 1px;
+    font-size: 30px;
+}
+p {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 0px;
 }

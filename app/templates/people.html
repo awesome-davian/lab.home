@@ -16,25 +16,14 @@
 
             </div> -->
     
-        {% for person in people %}
+        <!-- {% for person in people %}
             {% if person.course == 1 %}
             <div class="row">
                 <div class="col-md-12">
-                    <!-- <div class="team-member" onmouseover="update_member(0)"> -->
+                    <div class="team-member" onmouseover="update_member(0)">
                     <div class="team-member">
-                        <!-- <div style="background:url(../static/src/img/member/JaegulChoo_photo.jpg) no-repeat center center; background-size: cover;" class="member-pic"></div>
-                        <h4 id="member-name0">Jaegul Choo, Professor</h4>
-                        <p class="text-muted">Data Mining and Visual Analytics</p>
-                        <input type="hidden" id="member-text0" value="교수님짱짱"/> 
-                        <ul class="list-inline social-buttons">
-                            <li><a href="#"><i class="fa fa-twitter"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                            </li>
-                        </ul> -->
-                        <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
+                        
+                        <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size: cover;" class="member-pic"></div>
                         <h4 id="member-name0">{{person.name}}, 
                             {% if (person.course == 1) %}
                                 Assistant Professor
@@ -58,7 +47,7 @@
                             {% endif %}
                         </h4>
                         <p class="text-muted">{{person.interest}}</p>
-                        <!-- <input type="hidden" id="member-text0" value="교수님짱짱"/>  -->
+                        <input type="hidden" id="member-text0" value="교수님짱짱"/> 
                         <ul class="list-inline social-buttons">
                             <li>
                                 <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>
@@ -78,135 +67,73 @@
             </div>
             {% endif %}
 
-        {% endfor %}
+        {% endfor %} -->
 
-        {% set idx = 0 %}
         {% for person in people %}
-
-            {% if person.course != 1 %}
-
-                {% if (idx % 4 == 0) %}
-                <div class="row center-block">
-                {% endif %}
-
-                    <div class="col-md-3">
-                        <div class="team-member">
-                            <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
-                            <h4 id="member-name0">{{person.name}}, 
-                            {% if (person.course == 1) %}
-                                Assistant Professor
-                            {% elif (person.course == 2) %}
-                                Post-Doc
-                            {% elif (person.course == 3) %}
-                                Ph.D Student
-                            {% elif (person.course == 4) %}
-                                M.S Student
-                            {% elif (person.course == 5) %}
-                                B.S Student
-                            {% elif (person.course == 6) %}
-                                Special Guest
-                            {% elif (person.course == 7) %}
-                                Ph.D graduated
-                            {% elif (person.course == 8) %}
-                                M.S graduated
-                            {% elif (person.course == 9) %}
-                                B.S graduated
-                            {% else %}
-                            {% endif %}
-                            </h4>
-                            <p class="text-muted">{{person.interest}}</p>
-                            <!-- <input type="hidden" id="member-text0" value="교수님짱짱"/>  -->
-                            <ul class="list-inline social-buttons">
-                                <li>
-                                    <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>
-                                </li>
-                                <li>
-                                    <a href="{{person.link_twitter}}"><i class="fa fa-twitter"></i></a>
-                                </li>
-                                <li>
-                                    <a href="{{person.link_facebook}}"><i class="fa fa-facebook"></i></a>
-                                </li>
-                                <li>
-                                    <a href="{{person.link_linkedin}}"><i class="fa fa-linkedin"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                {% if (idx % 4 == 0) %}
-                </div>
-                {% endif %}
-
-                {% set idx = idx+1 %}
-
+        
+            {% if (loop.index % 4 == 0) %}
+            <div class="row center-block">
             {% endif %}
 
-        {% endfor %}
-        
-        <!-- <div class="row center-block">
             <div class="col-md-3">
                 <div class="team-member">
-                    <div  style="background:url(../static/src/img/member/P2150206.jpg) no-repeat center center; background-size: cover;" class="member-pic"></div>
-                    <h4 id="member-name1">Jaeseong Yoo, Ph.D. Student</h4>
-                    <p class="text-muted">Data-mining and Machine learning using statistical approach</p>
-                    <input type="hidden" id="member-text1" value="재성선배짱짱"/> 
+                    {% if person.link_homepage != '' %}
+                    <a href="{{person.link_homepage}}">
+                    {% endif %}
+                    
+                        <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
+                    
+                    {% if person.link_homepage != '' %}
+                    </a>
+                    {% endif %}
+
+                    <h4 id="member-name0">{{person.name}}, 
+                    {% if (person.course == 1) %}
+                        Assistant Professor
+                    {% elif (person.course == 2) %}
+                        Post-Doc
+                    {% elif (person.course == 3) %}
+                        Ph.D Student
+                    {% elif (person.course == 4) %}
+                        M.S Student
+                    {% elif (person.course == 5) %}
+                        B.S Student
+                    {% elif (person.course == 6) %}
+                        Special Guest
+                    {% elif (person.course == 7) %}
+                        Ph.D graduated
+                    {% elif (person.course == 8) %}
+                        M.S graduated
+                    {% elif (person.course == 9) %}
+                        B.S graduated
+                    {% else %}
+                    {% endif %}
+                    </h4>
+                    <p class="text-muted">{{person.interest}}</p>
+                    <!-- <input type="hidden" id="member-text0" value="교수님짱짱"/>  -->
                     <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-twitter"></i></a>
+                        <li>
+                            <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>
                         </li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
+                        <li>
+                            <a href="{{person.link_twitter}}"><i class="fa fa-twitter"></i></a>
                         </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                        <li>
+                            <a href="{{person.link_facebook}}"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li>
+                            <a href="{{person.link_linkedin}}"><i class="fa fa-linkedin"></i></a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="team-member">
-                    <div  style="background:url(../static/src/img/member/P2150206.jpg) no-repeat center center; background-size: cover;" class="member-pic"></div>
-                    <h4>Jaeseong Yoo, Ph.D. Student</h4>
-                    <p class="text-muted">Data-mining and Machine learning using statistical approach</p>
-                    <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                        </li>
-                    </ul>
-                </div>
+
+            {% if (loop.index % 4 == 0) %}
             </div>
-            <div class="col-md-3">
-                <div class="team-member">
-                    <img  style="background:url(../static/src/img/member/mchoi.jpg) no-repeat center center; background-size: cover;"  class="member-pic" alt="">
-                    <h4 id="member-name3">Minsuk Choi, Ph.D. Student</h4>
-                    <p class="text-muted">Data mining and Visual analytics</p>
-                    <input type="hidden" id="member-text3" value="Top tear - Ranker"/> 
-                    <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="team-member">
-                    <img  style="background:url(../static/src/img/member/mchoi.jpg) no-repeat center center; background-size: cover;"  class="member-pic" alt="">
-                    <h4>Minsuk Choi, Ph.D. Student</h4>
-                    <p class="text-muted">Data mining and Visual analytics</p>
-                    <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div> -->
+            {% endif %}
+
+        {% endfor%}
+
 </section>
 <script type="text/javascript">
     // $('.maps.embed-container').on('click', onMapClickHandler);

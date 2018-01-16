@@ -51,14 +51,33 @@ print('DB: News ----------------------------------------------')
 news_page = models.News.query.order_by(desc(models.News.date)).all()
 for item in news_page:
 	print('ID:\t\t%d' % (item.id))
+	print('SN:\t\t%d' % (item.sn))
 	print('Title:\t\t%s' % (item.title))
 	print('Contents:\t%s' % (item.contents))
 	print('Date:\t\t%s' % (item.date))
+
+# People
+print('DB: Member ---------------------------------------------')
+info = models.Member.query.all()
+for item in info:
+	print('ID:\t\t%d' % (item.id))
+	print('SN:\t\t%d' % (item.sn))
+	print('name:\t\t%s' % (item.name))
 
 # Teaching
 print('DB: Teaching ---------------------------------------------')
 info = models.Teaching.query.all()
 for item in info:
 	print('ID:\t\t%d' % (item.id))
+	print('SN:\t\t%d' % (item.sn))
 	print('code:\t\t%s' % (item.code))
 	print('name:\t\t%s' % (item.name))
+
+# Teaching
+print('DB: Links ---------------------------------------------')
+info = models.Links.query.all()
+for item in info:
+	print('ID:\t\t%d' % (item.id))
+	print('SN:\t\t%d' % (item.sn))
+	print('name:\t\t%s' % (item.name))
+	print('url:\t\t%s' % (item.link_url))

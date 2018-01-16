@@ -10,6 +10,8 @@ from datetime import datetime
 # Our mock database.
 users = {'davian': {'pw': 'visualking!'}}
 
+# category = {'news', 'people', 'publications', 'research', 'teaching', 'links'}
+
 app.secret_key = 'davian-3nff3infalfifh8serfh94fnkdn'  # Change this!
 
 login_manager = flask_login.LoginManager()
@@ -28,12 +30,11 @@ def index():
 	
 	labinfo = models.LabInfo.query.filter_by(id = 1).first()
 	about = models.About.query.filter_by(id = 1).first()
-	news_all = models.News.query.filter_by(show=True).order_by(desc(models.News.id)).all()
-	# news = news_all[:10]
-	news = news_all
-	people = models.Member.query.filter_by(show=True).order_by(desc(models.Member.id)).all()
-	teaching = models.Teaching.query.filter_by(show=True).order_by(desc(models.Teaching.id)).all()
-	publications = models.Publications.query.filter_by(show=True).order_by(desc(models.Publications.id)).all()
+	news = models.News.query.filter_by(show=True).order_by(desc(models.News.sn)).all()
+	people = models.Member.query.filter_by(show=True).order_by(desc(models.Member.sn)).all()
+	teaching = models.Teaching.query.filter_by(show=True).order_by(desc(models.Teaching.sn)).all()
+	publications = models.Publications.query.filter_by(show=True).order_by(desc(models.Publications.sn)).all()
+	links = models.Links.query.filter_by(show=True).order_by(desc(models.Links.sn)).all()
 
 	bg = labinfo.background_img_path
 
@@ -44,7 +45,8 @@ def index():
 							people=people, 
 							bg=bg,
 							teaching=teaching,
-							publications=publications)
+							publications=publications, 
+							links=links)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -126,7 +128,7 @@ def admin_news(page_num):
 	print('admin_news(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	items = models.News.query.order_by(desc(models.News.id)).all()
+	items = models.News.query.order_by(desc(models.News.sn)).all()
 	item_count = len(items)
 	page_count = int((item_count-1) / count_per_page + 1)
 
@@ -185,26 +187,21 @@ def admin_news_edit():
 @flask_login.login_required
 def admin_news_delete():
 
-	print('admin_news_delete()')
-	
 	id = request.form.get('id')
 	
 	print('admin_news_delete(), id: %s' % id)
 
-	db_wrapper.delete_news(id = id)
+	db_wrapper.delete_item(category='news', id=id)
 
 	return redirect(url_for('admin_news', page_num=1))
 
-@app.route('/admin_news/admin_news_arrow/<int:id>/<string:direction>')
+@app.route('/admin_news/admin_news_arrow/<int:id>/<int:sn>/<string:direction>')
 @flask_login.login_required
-def admin_news_arrow(id, direction):
+def admin_news_arrow(id, sn, direction):
 
-	print('admin_news_arrow(%d, %s)' % (id, direction))
+	print('admin_news_arrow(%d, %s)' % (sn, direction))
 
-	if direction == 'up':
-		db_wrapper.news_arrow_up(id = id)
-	else:
-		db_wrapper.news_arrow_down(id = id)
+	db_wrapper.change_position(category='news', sn=sn, direction=direction)
 
 	return redirect(url_for('admin_news', page_num=1))
 
@@ -214,7 +211,7 @@ def admin_news_toggle_show(id):
 
 	print('admin_news_toggle_show(%d)' % (id))
 
-	db_wrapper.news_toggle_show(id = id)
+	db_wrapper.toggle_show(category='news', id=id)
 
 	return redirect(url_for('admin_news', page_num=1))
 
@@ -225,7 +222,7 @@ def admin_research(page_num):
 	print('admin_research(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	research_all = models.Research.query.order_by(desc(models.Research.id)).all()
+	research_all = models.Research.query.order_by(desc(models.Research.sn)).all()
 	research_count = len(research_all)
 	page_count = int((research_count-1) / count_per_page + 1)
 
@@ -291,27 +288,22 @@ def admin_research_edit():
 @app.route('/admin_research/delete', methods=['GET', 'POST'])
 @flask_login.login_required
 def admin_research_delete():
-
-	print('admin_research_delete()')
 	
-	research_id = request.form.get('research_id')
+	id = request.form.get('research_id')
 	
-	print('admin_research_delete(), research_id: %s' % (research_id))
+	print('admin_research_delete(), id: %s' % (id))
 
-	db_wrapper.delete_research(id = research_id)
+	db_wrapper.delete_item(category='research', id=id)
 
 	return redirect(url_for('admin_research', page_num=1))
 
-@app.route('/admin_research/admin_research_arrow/<int:id>/<string:direction>')
+@app.route('/admin_research/admin_research_arrow/<int:id>/<int:sn>/<string:direction>')
 @flask_login.login_required
-def admin_research_arrow(id, direction):
+def admin_research_arrow(id, sn, direction):
 
-	print('admin_research_arrow(%d, %s)' % (id, direction))
+	print('admin_research_arrow(%d, %s)' % (sn, direction))
 
-	if direction == 'up':
-		db_wrapper.research_arrow_up(id = id)
-	else:
-		db_wrapper.research_arrow_down(id = id)
+	db_wrapper.change_position(category='research', sn=sn, direction=direction)
 
 	return redirect(url_for('admin_research', page_num=1))
 
@@ -321,7 +313,7 @@ def admin_research_toggle_show(id):
 
 	print('admin_research_toggle_show(%d)' % (id))
 
-	db_wrapper.research_toggle_show(id = id)
+	db_wrapper.toggle_show(category='research', id=id)
 
 	return redirect(url_for('admin_research', page_num=1))
 
@@ -331,7 +323,7 @@ def admin_member(page_num):
 	print('admin_member(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	member_all = models.Member.query.order_by(desc(models.Member.id)).all()
+	member_all = models.Member.query.order_by(desc(models.Member.sn)).all()
 	member_count = len(member_all)
 	page_count = int((member_count-1) / count_per_page + 1)
 
@@ -403,6 +395,7 @@ def admin_member_edit():
 	# career1 = request.form.get('career1')
 	# career2 = request.form.get('career2')
 	# career3 = request.form.get('career3')
+	link_homepage = request.form.get('link_homepage')
 	link_github = request.form.get('link_github')
 	link_facebook = request.form.get('link_facebook')
 	link_twitter = request.form.get('link_twitter')
@@ -415,7 +408,7 @@ def admin_member_edit():
 	
 	print('admin_member_edit(), name: %s, student_id: %s, email: %s' % (name, student_id, email))
 
-	db_wrapper.update_member(id=member_id, name=name, email=email, student_id=student_id, course=course, picture_filename=picture_filename, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
+	db_wrapper.update_member(id=member_id, name=name, email=email, student_id=student_id, course=course, picture_filename=picture_filename, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_homepage=link_homepage, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -423,26 +416,21 @@ def admin_member_edit():
 @flask_login.login_required
 def admin_member_delete():
 
-	print('admin_member_delete()')
+	id = request.form.get('member_id')
 	
-	member_id = request.form.get('member_id')
-	
-	print('admin_member_delete(), member_id: %s' % (member_id))
+	print('admin_member_delete(), id: %s' % (id))
 
-	db_wrapper.delete_member(id = member_id)
+	db_wrapper.delete_item(category='people', id=id)
 
 	return redirect(url_for('admin_member', page_num=1))
 
-@app.route('/admin_member/admin_member_arrow/<int:id>/<string:direction>')
+@app.route('/admin_member/admin_member_arrow/<int:id>/<int:sn>/<string:direction>')
 @flask_login.login_required
-def admin_member_arrow(id, direction):
+def admin_member_arrow(id, sn, direction):
 
-	print('admin_member_arrow(%d, %s)' % (id, direction))
+	print('admin_member_arrow(%d, %s)' % (sn, direction))
 
-	if direction == 'up':
-		db_wrapper.member_arrow_up(id = id)
-	else:
-		db_wrapper.member_arrow_down(id = id)
+	db_wrapper.change_position(category='people', sn=sn, direction=direction)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -452,7 +440,7 @@ def admin_member_toggle_show(id):
 
 	print('admin_member_toggle_show(%d)' % (id))
 
-	db_wrapper.member_toggle_show(id = id)
+	db_wrapper.toggle_show(category='people', id=id)
 
 	return redirect(url_for('admin_member', page_num=1))
 
@@ -463,7 +451,7 @@ def admin_teaching(page_num):
 	print('admin_teaching(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	teaching_all = models.Teaching.query.order_by(desc(models.Teaching.id)).all()
+	teaching_all = models.Teaching.query.order_by(desc(models.Teaching.sn)).all()
 	teaching_count = len(teaching_all)
 	page_count = int((teaching_count-1) / count_per_page + 1)
 
@@ -527,27 +515,22 @@ def admin_teaching_edit():
 @app.route('/admin_teaching/delete', methods=['GET', 'POST'])
 @flask_login.login_required
 def admin_teaching_delete():
-
-	print('admin_teaching_delete()')
 	
-	teaching_id = request.form.get('teaching_id')
+	id = request.form.get('teaching_id')
 	
-	print('admin_teaching_delete(), teaching_id: %s' % (teaching_id))
+	print('admin_teaching_delete(), id: %s' % (id))
 
-	db_wrapper.delete_teaching(id = teaching_id)
+	db_wrapper.delete_item(category='teaching', id=id)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
-@app.route('/admin_teaching/admin_teaching_arrow/<int:id>/<string:direction>')
+@app.route('/admin_teaching/admin_teaching_arrow/<int:id>/<int:sn>/<string:direction>')
 @flask_login.login_required
-def admin_teaching_arrow(id, direction):
+def admin_teaching_arrow(id, sn, direction):
 
-	print('admin_teaching_arrow(%d, %s)' % (id, direction))
+	print('admin_teaching_arrow(%d, %s)' % (sn, direction))
 
-	if direction == 'up':
-		db_wrapper.teaching_arrow_up(id = id)
-	else:
-		db_wrapper.teaching_arrow_down(id = id)
+	db_wrapper.change_position(category='teaching', sn=sn, direction=direction)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
@@ -557,7 +540,7 @@ def admin_teaching_toggle_show(id):
 
 	print('admin_teaching_toggle_show(%d)' % (id))
 
-	db_wrapper.teaching_toggle_show(id = id)
+	db_wrapper.toggle_show(category='teaching', id=id)
 
 	return redirect(url_for('admin_teaching', page_num=1))
 
@@ -568,7 +551,7 @@ def admin_publication(page_num):
 	print('admin_publication(), page_num: %d' % (page_num))
 
 	count_per_page = 10
-	publication_all = models.Publications.query.order_by(desc(models.Publications.id)).all()
+	publication_all = models.Publications.query.order_by(desc(models.Publications.sn)).all()
 	publication_count = len(publication_all)
 	page_count = int((publication_count-1) / count_per_page + 1)
 
@@ -647,26 +630,21 @@ def admin_publication_edit():
 @flask_login.login_required
 def admin_publication_delete():
 
-	print('admin_publication_delete()')
+	id = request.form.get('publication_id')
 	
-	publication_id = request.form.get('publication_id')
-	
-	print('admin_publication_delete(), publication_id: %s' % (publication_id))
+	print('admin_publication_delete(), id: %s' % (id))
 
-	db_wrapper.delete_publication(id=publication_id)
+	db_wrapper.delete_item(category='publications', id=id)
 
 	return redirect(url_for('admin_publication', page_num=1))
 
-@app.route('/admin_publication/admin_publication_arrow/<int:id>/<string:direction>')
+@app.route('/admin_publication/admin_publication_arrow/<int:id>/<int:sn>/<string:direction>')
 @flask_login.login_required
-def admin_publication_arrow(id, direction):
+def admin_publication_arrow(id, sn, direction):
 
-	print('admin_publication_arrow(%d, %s)' % (id, direction))
+	print('admin_publication_arrow(%d, %s)' % (sn, direction))
 
-	if direction == 'up':
-		db_wrapper.publication_arrow_up(id = id)
-	else:
-		db_wrapper.publication_arrow_down(id = id)
+	db_wrapper.change_position(category='publications', sn=sn, direction=direction)
 
 	return redirect(url_for('admin_publication', page_num=1))
 
@@ -676,9 +654,111 @@ def admin_publication_toggle_show(id):
 
 	print('admin_publication_toggle_show(%d)' % (id))
 
-	db_wrapper.publication_toggle_show(id = id)
+	db_wrapper.toggle_show(category='publications', id=id)
 
 	return redirect(url_for('admin_publication', page_num=1))
+
+@app.route('/admin_links/<int:page_num>')
+@flask_login.login_required
+def admin_links(page_num):
+	
+	print('admin_links(), page_num: %d' % (page_num))
+
+	count_per_page = 10
+	links_all = models.Links.query.order_by(desc(models.Links.sn)).all()
+	links_count = len(links_all)
+	page_count = int((links_count-1) / count_per_page + 1)
+
+	start_idx = (count_per_page * (page_num-1)) + 1
+	end_idx = (count_per_page * (page_num-1)) + count_per_page
+	if links_count < end_idx:
+		end_idx = links_count
+
+	links_page = []
+	idx = 1
+	for item in links_all:
+		if start_idx <= idx and idx <= end_idx:
+			links_page.append(item)
+		idx += 1
+
+	print('admin_links(), links_count: %d, page_count: %d' % (links_count, page_count))
+	
+	return render_template("admin_links.html", page_num = page_num, page_count = page_count, links_count = links_count, links_page = links_page, start_idx = start_idx, end_idx = end_idx)
+
+@app.route('/admin_links/new', methods=['GET', 'POST'])
+@flask_login.login_required
+def admin_links_new():
+	
+	name = request.form.get('name')
+	description = request.form.get('description')
+	image_path = request.files.get('image_path')
+	link_url = request.form.get('link_url')
+	link_etc = request.form.get('link_etc')
+	# is_activated = request.form.get('is_activated')
+	show = request.form.get('show') != None
+	
+	print('admin_links_new(), name: %s, description: %s' % (name, description))
+
+
+	db_wrapper.insert_link(name=name, description=description, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
+
+	return redirect(url_for('admin_links', page_num=1))
+
+@app.route('/admin_links/edit', methods=['GET', 'POST'])
+@flask_login.login_required
+def admin_links_edit():
+
+	print('admin_links_edit()')
+	
+	link_id = request.form.get('link_id')
+	name = request.form.get('name')
+	description = request.form.get('description')
+	image_path = request.files.get('image_path')
+	link_url = request.form.get('link_url')
+	link_etc = request.form.get('link_etc')
+
+	show = request.form.get('show') != None
+	
+	print('admin_links_edit(), name: %s, description: %s' % (name, description))
+
+	# db_wrapper.update_links(links_id=links_id, title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
+	db_wrapper.update_link(id=link_id, name=name, description=description, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
+
+	return redirect(url_for('admin_links', page_num=1))
+
+@app.route('/admin_links/delete', methods=['GET', 'POST'])
+@flask_login.login_required
+def admin_links_delete():
+	
+	id = request.form.get('link_id')
+	
+	print('admin_links_delete(), id: %s' % (id))
+
+	db_wrapper.delete_item(category='links', id=id)
+
+	db_wrapper.delete_link(id=link_id)
+
+	return redirect(url_for('admin_links', page_num=1))
+
+@app.route('/admin_links/admin_links_arrow/<int:id>/<int:sn>/<string:direction>')
+@flask_login.login_required
+def admin_links_arrow(id, sn, direction):
+
+	print('admin_links_arrow(%d, %s)' % (sn, direction))
+
+	db_wrapper.change_position(category='links', sn=sn, direction=direction)
+
+	return redirect(url_for('admin_links', page_num=1))
+
+@app.route('/admin_links/admin_links_toggle_show/<int:id>')
+@flask_login.login_required
+def admin_links_toggle_show(id):
+
+	print('admin_links_toggle_show(%d)' % (id))
+
+	db_wrapper.toggle_show(category='links', id=id)
+
+	return redirect(url_for('admin_links', page_num=1))
 
 @app.route('/protected')
 @flask_login.login_required

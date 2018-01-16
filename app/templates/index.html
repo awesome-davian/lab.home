@@ -51,26 +51,11 @@
     {% include "publications.html" %}
     {% include "teaching.html" %}
     
-    <!-- {# include "links.html" #} -->
+    {% include "links.html" %}
     {% include "calendar.html" %}
     {% include "map.html" %}
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2017 Awesome DAVIAN. All Rights Reserved.</p>
-            <ul class="list-inline">
-                <li>
-                    <a href="#">Privacy</a>
-                </li>
-                <li>
-                    <a href="#">Terms</a>
-                </li>
-                <li>
-                    <a href="#">FAQ</a>
-                </li>
-            </ul>
-        </div>
-    </footer>
+    {% include "footer.html" %}
 
     <!-- jQuery -->
     <script src="{{url_for('static', filename='plugins/vendor/jquery/jquery.js')}}"></script>

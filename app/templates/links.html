@@ -1,16 +1,38 @@
-<section id="links" class="features">
+<section id="links" class="features bg-primary">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="section-heading">
                     <h2>Link</h2>
-                    <p class="text-muted">Check out what you can do with this app theme!</p>
+                    <!-- <p class="text-muted">Check out what you can do with this app theme!</p> -->
                     <hr>
                 </div>
             </div>
         </div>
-        <div class="row">
-            
+
+        {% for link in links %}
+
+            {% if (loop.index % 4 == 0) %}
+            <div class="row center-block">
+            {% endif %}
+
+            <div class="col-md-3">
+                <div class="team-member">
+                    <a href="{{link.link_url}}">
+                        <div style="background: url({{ url_for('static', filename='src/img/links/'+link.image_path) }}) no-repeat center center; background-size; cover;" class="link-pic"></div>
+                    </a>
+                    <h4 id="member-name0">{{link.name}}</h4>
+                </div>
+            </div>
+
+            {% if (loop.index % 4 == 0) %}
+            </div>
+            {% endif %}
+
+
+        {% endfor %}
+
+        <!-- <div class="row">
             <div class="col-md-12">
                 <div class="container-fluid">
                     <div class="row">
@@ -45,5 +67,5 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 </section>
