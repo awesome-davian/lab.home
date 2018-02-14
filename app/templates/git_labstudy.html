@@ -1,0 +1,28 @@
+<script>
+    function b64DecodeUnicode(str) {
+        // Going backwards: from bytestream, to percent-encoding, to original string.
+        return decodeURIComponent(atob(str).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
+
+    var converter = new showdown.Converter();
+    $.ajax({
+        url: 'https://api.github.com/repos/awesome-davian/Paper-study/contents/README.md',
+        dataType: 'jsonp',
+        success: function (data) {
+            var readmeString = b64DecodeUnicode(data['data']['content']);
+            $('.result').html(converter.makeHtml(readmeString));
+        }
+    })
+</script>
+<section id="github" class="features bg-primary text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="section-heading">DAVIAN Lab Study</h2>
+                <div class='result' style="white-space: pre-line; text-align:left;"></div>
+            </div>
+        </div>
+    </div>
+</section>
