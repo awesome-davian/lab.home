@@ -77,14 +77,12 @@
 
             <div class="col-md-3">
                 <div class="team-member">
-                    {% if person.link_homepage != '' %}
+                    {% if person.link_homepage != '' and person.link_homepage != None %}
                     <a href="{{person.link_homepage}}">
-                    {% endif %}
-                    
                         <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
-                    
-                    {% if person.link_homepage != '' %}
                     </a>
+                    {% else %}
+                    <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
                     {% endif %}
 
                     <h4 id="member-name0">{{person.name}}, 
@@ -110,7 +108,6 @@
                     {% endif %}
                     </h4>
                     <p class="text-muted">{{person.interest}}</p>
-                    <!-- <input type="hidden" id="member-text0" value="교수님짱짱"/>  -->
                     <ul class="list-inline social-buttons">
                         <li>
                             <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>

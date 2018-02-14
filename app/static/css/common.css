@@ -37,14 +37,18 @@
     display:block;
 }
 .teaching-list-element{
-    font-size: 25px;
+    font-size: 22px;
     /*font-weight: bold;*/
     cursor: pointer;
     text-align: left;
 }
 .img-publication{
-    width:10%;
+    /* width:6%; */
+    width: 70px;
+    height: 70px;
     float:left;
+    padding-top: 4px;
+    object-fit: cover;
 }
 .publication-main{
     width:90%;
@@ -66,10 +70,14 @@ h-publication-title {
     font-family: 'Catamaran', 'Helvetica', 'Arial', 'sans-serif';
     font-weight: 200;
     letter-spacing: 1px;
-    font-size: 30px;
+    font-size: 22px;
 }
 p {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.5;
     margin-bottom: 0px;
+}
+
+a.publication {
+    color: #ffffff;
 }

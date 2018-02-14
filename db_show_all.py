@@ -63,6 +63,8 @@ for item in info:
 	print('ID:\t\t%d' % (item.id))
 	print('SN:\t\t%d' % (item.sn))
 	print('name:\t\t%s' % (item.name))
+	print('homepage:\t%s' % (item.link_homepage))
+	
 
 # Teaching
 print('DB: Teaching ---------------------------------------------')
@@ -73,8 +75,24 @@ for item in info:
 	print('code:\t\t%s' % (item.code))
 	print('name:\t\t%s' % (item.name))
 
-# Teaching
-print('DB: Links ---------------------------------------------')
+# Publications
+print('DB: Publications------------------------------------------')
+info = models.Publications.query.all()
+for item in info:
+	print('ID:\t\t%d' % (item.id))
+	print('SN:\t\t%d' % (item.sn))
+	print('title:\t\t%s' % (item.title))
+	print('pdf1:\t\t%s' % (item.link_pdf1))
+	print('pdf2:\t\t%s' % (item.link_pdf2))
+	print('video:\t\t%s' % (item.link_video))
+	print('code:\t\t%s' % (item.link_source))
+	print('url:\t\t%s' % (item.link_url))
+	print('etc:\t\t%s' % (item.link_etc))
+	print('image:\t\t%s' % (item.teaser_image_path))
+	print('thumb:\t\t%s' % (item.thumbnail_image_path))
+
+# Links
+print('DB: Links ------------------------------------------------')
 info = models.Links.query.all()
 for item in info:
 	print('ID:\t\t%d' % (item.id))

@@ -23,15 +23,15 @@ def get_table(category) :
 
 def update_lab_info(desc, sub_desc, bg_filename, bg_image):
 
-	bg_name = secure_filename(bg_image.filename)
-
-	if bg_name != '':
+	if bg_image != None:
+		bg_name = secure_filename(bg_image.filename)
 		
 		bg_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/')
 		bg_path = os.path.join(bg_path, bg_name)
 		
 		print(bg_path)
 		bg_image.save(bg_path)
+
 	else:
 		if bg_filename != '':
 			bg_name = bg_filename
@@ -74,9 +74,13 @@ def insert_news(title, contents, date, show):
 
 	date_python = datetime.strptime(date, '%Y-%m-%d')
 
-	max_sn = models.News.query.order_by(desc(models.News.sn)).first().sn
+	max_sn = 0
+	if models.News.query.count() != 0:
+		max_sn = models.News.query.order_by(desc(models.News.sn)).first().sn
 
 	news = models.News(sn=max_sn+1, title=title, contents=contents, date=date_python, show=show)
+
+	print(news)
 	db.session.add(news)
 	db.session.commit()
 
@@ -99,7 +103,9 @@ def update_news(id, title, contents, date, show):
 
 def insert_research(title, text1, text2, teaser_image_path, member, publications, is_activated, show):
 
-	max_sn = models.Research.query.order_by(desc(models.Research.sn)).first().sn
+	max_sn = 0
+	if models.Research.query.count() != 0:
+		max_sn = models.Research.query.order_by(desc(models.Research.sn)).first().sn
 
 	research = models.Research(sn=max_sn+1, title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 	db.session.add(research)
@@ -126,15 +132,20 @@ def update_research(id, title, text1, text2, teaser_image_path, member, publicat
 
 def insert_member(name, email, student_id, course, picture, interest, bs, ms, introduction, link_github, link_facebook, link_twitter, link_linkedin, show):
 
-	picture_name = secure_filename(picture.filename)
-	if picture_name != '':
+	if picture != None:
+		picture_name = secure_filename(picture.filename)
+
 		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
 		picture_path = os.path.join(picture_path, picture_name)
 		
 		print(picture_path)
 		picture.save(picture_path)
+	else:
+		picture_name = ''
 
-	max_sn = models.Member.query.order_by(desc(models.Member.sn)).first().sn
+	max_sn = 0
+	if models.Member.query.count() != 0:
+		max_sn = models.Member.query.order_by(desc(models.Member.sn)).first().sn
 	
 	member = models.Member(sn=max_sn+1, name=name, email=email, student_id=student_id, course=course, picture_path=picture_name, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 	db.session.add(member)
@@ -142,8 +153,9 @@ def insert_member(name, email, student_id, course, picture, interest, bs, ms, in
 
 def update_member(id, name, email, student_id, course, picture_filename, picture, interest, bs, ms, introduction, link_homepage, link_github, link_facebook, link_twitter, link_linkedin, show):
 
-	picture_name = secure_filename(picture.filename)
-	if picture_name != '':
+	if picture != None:
+		picture_name = secure_filename(picture.filename)
+
 		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
 		picture_path = os.path.join(picture_path, picture_name)
 		
@@ -181,7 +193,9 @@ def update_member(id, name, email, student_id, course, picture_filename, picture
 
 def insert_teaching(code, name, description, when, target_audience, link, video, show):
 
-	max_sn = models.Teaching.query.order_by(desc(models.Teaching.sn)).first().sn
+	max_sn = 0
+	if models.Teaching.query.count() != 0:
+		max_sn = models.Teaching.query.order_by(desc(models.Teaching.sn)).first().sn
 
 	teaching = models.Teaching(sn=max_sn+1, code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 	db.session.add(teaching)
@@ -208,16 +222,21 @@ def update_teaching(id, code, name, description, when, target_audience, link, vi
 
 def insert_publication(title, description, year, abstract, teaser_image, authors, link_pdf1, link_video, link_source, link_url, show):
 
-	teaser_image_name = secure_filename(teaser_image.filename)
-	if teaser_image_name != '':
+	if teaser_image != None:
+		teaser_image_name = secure_filename(teaser_image.filename)
+
 		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
 		teaser_path = os.path.join(teaser_path, teaser_image_name)
 		
 		print(teaser_path)
 		teaser_image.save(teaser_path)
+	else:
+		teaser_image_name = ''
 
-	max_sn = models.Publications.query.order_by(desc(models.Publications.sn)).first().sn
-
+	max_sn = 0
+	if models.Publications.query.count() != 0:
+		max_sn = models.Publications.query.order_by(desc(models.Publications.sn)).first().sn
+	
 	publications = models.Publications(sn=max_sn+1, title=title, description=description, year=year, abstract=abstract, teaser_image_path=teaser_image_name, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
 	db.session.add(publications)
 	db.session.commit()
@@ -225,8 +244,10 @@ def insert_publication(title, description, year, abstract, teaser_image, authors
 # def update_publication(id, title, description, abstract, teaser_image_path, authors, link_pdf1, link_pdf2, link_video, link_source, link_url, link_etc):
 def update_publication(id, title, description, year, abstract, teaser_filename, teaser_image, authors, link_pdf1, link_video, link_source, link_url, show):
 
-	teaser_image_name = secure_filename(teaser_image.filename)
-	if teaser_image_name != '':
+	
+	if teaser_image != None:
+		teaser_image_name = secure_filename(teaser_image.filename)
+
 		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
 		teaser_path = os.path.join(teaser_path, teaser_image_name)
 		
@@ -262,32 +283,39 @@ def update_publication(id, title, description, year, abstract, teaser_filename, 
 
 def insert_link(name, description, image_path, link_url, link_etc, show):
 
-	imagefile_name = secure_filename(image_path.filename)
-	if imagefile_name != '':
+	
+	if image_path != None:
+		imagefile_name = secure_filename(image_path.filename)
+
 		image_full_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/links/')
 		image_full_path = os.path.join(image_full_path, imagefile_name)
 		
 		print(image_full_path)
 		image_path.save(image_full_path)
 
-	max_sn = models.Links.query.order_by(desc(models.Links.sn)).first().sn
+	max_sn = 0
+	if models.Links.query.count() != 0:
+		max_sn = models.Links.query.order_by(desc(models.Links.sn)).first().sn
+	
 
 	links = models.Links(sn=max_sn+1, name=name, description=description, image_path=imagefile_name, link_url=link_url, link_etc=link_etc, show=show)
 	db.session.add(links)
 	db.session.commit()
 
-def update_link(id, name, description, image_path, link_url, link_etc, show):
+def update_link(id, name, description, image_name, image_path, link_url, link_etc, show):
 
-	imagefile_name = secure_filename(image_path.filename)
-	if imagefile_name != '':
+	
+	if image_path != None:
+		imagefile_name = secure_filename(image_path.filename)
+
 		image_full_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/links/')
 		image_full_path = os.path.join(image_full_path, imagefile_name)
 		
 		print(image_full_path)
 		image_path.save(image_full_path)
 	else:
-		if image_path != '':
-			imagefile_name = image_path
+		if image_name != '':
+			imagefile_name = image_name
 		else:
 			imagefile_name = ''
 

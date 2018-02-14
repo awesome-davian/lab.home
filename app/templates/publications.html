@@ -36,9 +36,30 @@
                                     <img src={{ url_for('static', filename='src/img/publications/'+item.teaser_image_path)}} class="img-publication" alt="">
                                 </a>
                                 <div class="publication-main">
-                                    <h-publication-title>{{item.title}}</h-publication-title>
+                                    <h-publication-title>
+                                        <a href="#publication_detail_{{item.id}}" class="portfolio-link, publication" data-toggle="modal">{{item.title}}</a>
+                                    </h-publication-title>
                                     <p class="text-muted">{{item.authors}}<br>
-                                    {{item.description}}</p>
+                                    {{item.description}} 
+                                    {% if item.link_pdf1 != '' and item.link_pdf1 != None %}
+                                        <a href={{item.link_pdf1}} class="publication">[PDF]</a>
+                                    {% endif %}
+                                    {% if item.link_pdf2 != '' and item.link_pdf2 != None%}
+                                        <a href={{item.link_pdf2}} class="publication">[PDF]</a>
+                                    {% endif %}
+                                    {% if item.link_video != '' and item.link_video != None%}
+                                        <a href={{item.link_video}} class="publication">[VIDEO]</a>
+                                    {% endif %}
+                                    {% if item.link_source != '' and item.link_source != None%}
+                                        <a href={{item.link_source}} class="publication">[CODE]</a>
+                                    {% endif %}
+                                    {% if item.link_url != '' and item.link_url != None%}
+                                        <a href={{item.link_url}} class="publication">[URL]</a>
+                                    {% endif %}
+                                    {% if item.link_etc != '' and item.link_etc != None%}
+                                        <a href={{item.link_etc}} class="publication">[ETC]</a>
+                                    {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>

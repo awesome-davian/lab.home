@@ -71,6 +71,7 @@ def admin_title():
 		print('admin_title(), Could not found a Lab. information.')
 		return redirect(url_for('protected'))
 	
+	print(labinfo.background_img_path)
 	
 	return render_template("admin_title.html", description=labinfo.description, 
 		sub_description=labinfo.sub_description, bg_filename=labinfo.background_img_path)
@@ -713,16 +714,17 @@ def admin_links_edit():
 	link_id = request.form.get('link_id')
 	name = request.form.get('name')
 	description = request.form.get('description')
+	image_name = request.files.get('image_name')
 	image_path = request.files.get('image_path')
 	link_url = request.form.get('link_url')
 	link_etc = request.form.get('link_etc')
 
 	show = request.form.get('show') != None
 	
-	print('admin_links_edit(), name: %s, description: %s' % (name, description))
+	print('admin_links_edit(), name: %s, description: %s, image_path: %s' % (name, description, image_path))
 
 	# db_wrapper.update_links(links_id=links_id, title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
-	db_wrapper.update_link(id=link_id, name=name, description=description, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
+	db_wrapper.update_link(id=link_id, name=name, description=description, image_name=image_name, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
 
 	return redirect(url_for('admin_links', page_num=1))
 

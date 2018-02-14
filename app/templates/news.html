@@ -11,7 +11,7 @@
                      -->
                 {% for item in news %}
                     <span class="news-list-element">
-                        {{item.contents}}, {{item.date.strftime('%d %b %Y')}} <br>
+                        {{item.title}}, {{item.date.strftime('%d %b %Y')}} <br>
                     </span>
                 {% endfor %}
                 
