@@ -63,7 +63,7 @@ def admin():
 	if request.method == 'GET':
 		return render_template("login.html")
 
-	user_id = request.form.get('user_id')
+	user_id = request.form.get('user_id').lower()
 	if request.form.get('pw') == users[user_id]['pw']:
 		user = User()
 		user.id = user_id
