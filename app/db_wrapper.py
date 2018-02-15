@@ -5,7 +5,6 @@ from datetime import datetime
 from sqlalchemy import desc
 
 def get_table(category) :
-	
 	if category == 'news':
 		return models.News
 	elif category == 'people':
@@ -133,7 +132,7 @@ def update_research(id, title, text1, text2, teaser_image_path, member, publicat
 def insert_member(name, email, student_id, course, picture, interest, bs, ms, introduction, link_github, link_facebook, link_twitter, link_linkedin, show):
 
 	if picture != None:
-		picture_name = secure_filename(picture.filename)
+		picture_name = "%s_%s" % (name, secure_filename(picture.filename))
 
 		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
 		picture_path = os.path.join(picture_path, picture_name)

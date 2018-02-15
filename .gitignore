@@ -2,3 +2,5 @@ app.db
 *.pyc
 .vscode/ftp-kr.json
 .vscode/ftp-kr.sync.cache.json
+app/templates/member_page/*.html
+app/static/src/img/*

@@ -3,6 +3,7 @@ from app import app
 from flask import render_template, redirect, url_for, request
 import flask_login
 import os
+from shutil import copyfile
 from app import db, models, db_wrapper
 from sqlalchemy import desc
 from datetime import datetime
@@ -47,6 +48,15 @@ def index():
 							teaching=teaching,
 							publications=publications, 
 							links=links)
+
+@app.route('/member_page/<member_name>')
+def member_page(member_name):
+	file_dir = './app/templates/member_page'
+	filename = "%s/%s.html" % (file_dir, member_name)
+	if not os.path.exists(filename):
+		copyfile('%s/template.html' % file_dir, filename)
+	
+	return render_template('member_page/%s.html' % member_name)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():

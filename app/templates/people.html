@@ -82,8 +82,11 @@
                         <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
                     </a>
                     {% else %}
-                    <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
+                    <a href="/member_page/{{person.name}}">
+                        <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
+                    </a>
                     {% endif %}
+                    
 
                     <h3 id="member-name0">{{person.name}}</h3>
                     <h5>
