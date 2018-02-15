@@ -47,6 +47,15 @@
     </div>
     <!-- /.container-fluid -->
 </nav>
+<script>
+    $(window).scroll(function(){
+        if (document.documentElement.scrollTop > $('#news').position()['top']) {
+            $('.navbar-default').css('background-color', 'rgba(255, 94, 0, 0.5)');
+        } else{
+            $('.navbar-default').css('background-color', 'transparent');
+        }
+    })
+</script>
 <!-- <script>
     // Closes the sidebar menu
     $("#menu-close").click(function(e) {

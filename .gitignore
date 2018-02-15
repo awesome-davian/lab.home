@@ -1,2 +1,3 @@
 app.db
 *.pyc
+.vscode/ftp-kr.json

@@ -41,15 +41,18 @@ a:active,
 a.active {
   outline: none;
 }
+/*
 a {
-  color: #fed136;
+  color: #fe8636;
 }
+a.active {
+  color: #fe8636;
+}
+*/
 a:hover,
 a:focus,
 a:active,
-a.active {
-  color: #fec503;
-}
+
 hr {
   max-width: 100px;
   margin: 25px auto 0;
