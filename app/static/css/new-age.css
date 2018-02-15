@@ -55,7 +55,7 @@ a:active,
 
 hr {
   max-width: 100px;
-  margin: 25px auto 0;
+  margin: 10px auto 0;
   border-width: 1px;
   border-color: rgba(34, 34, 34, 0.1);
 }
@@ -105,8 +105,8 @@ p {
 .navbar-default .nav > li > a {
   font-family: 'Lato', 'Helvetica', 'Arial', 'sans-serif';
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
+  letter-spacing: 1px;
+  font-size: 12px;
 }
 .navbar-default .nav > li > a,
 .navbar-default .nav > li > a:focus {
