@@ -85,7 +85,8 @@
                     <div style="background: url({{ url_for('static', filename='src/img/member/'+person.picture_path) }}) no-repeat center center; background-size; cover;" class="member-pic"></div>
                     {% endif %}
 
-                    <h4 id="member-name0">{{person.name}}, 
+                    <h3 id="member-name0">{{person.name}}</h3>
+                    <h5>
                     {% if (person.course == 1) %}
                         Assistant Professor
                     {% elif (person.course == 2) %}
@@ -106,8 +107,14 @@
                         B.S graduated
                     {% else %}
                     {% endif %}
-                    </h4>
-                    <p class="text-muted">{{person.interest}}</p>
+                    </h5>
+                    <p>Research area</p>
+                    <p class="text-muted">
+                        {% if person.interest != '' %} 
+                            {{person.interest}} 
+                        {% else %} To be uploaded 
+                        {% endif %}
+                    </p>
                     <ul class="list-inline social-buttons">
                         <li>
                             <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>
