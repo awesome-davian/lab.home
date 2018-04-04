@@ -60,6 +60,9 @@ def member_page(member_name):
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+	if request.remote_addr != '163.152.162.105':
+		return flask.abort(400)
+
 	if request.method == 'GET':
 		return render_template("login.html")
 
@@ -777,6 +780,10 @@ def admin_links_toggle_show(id):
 def protected():
     # return 'Logged in as: ' + flask_login.current_user.id
     return render_template("admin_title.html")
+
+@app.route('/privacy', methods=['GET', 'POST'])
+def privacy():
+	return render_template('privacy.html')
 
 @app.route('/logout')
 def logout():

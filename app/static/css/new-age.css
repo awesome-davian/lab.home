@@ -8,6 +8,11 @@
   font-weight: 200;
   letter-spacing: 1px;
 }
+.background-img{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
 .body-font {
   font-family: 'Muli', 'Helvetica', 'Arial', 'sans-serif';
 }
