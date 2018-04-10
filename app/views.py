@@ -8,6 +8,8 @@ from app import db, models, db_wrapper
 from sqlalchemy import desc
 from datetime import datetime
 
+logger = app.logger
+
 # Our mock database.
 users = {'davian': {'pw': 'visualking!'}}
 
@@ -38,6 +40,8 @@ def index():
 	links = models.Links.query.filter_by(show=True).order_by(desc(models.Links.sn)).all()
 
 	bg = labinfo.background_img_path
+
+	logger.debug("/index")
 
 	return render_template("index.html",
 							labinfo=labinfo, 
@@ -81,10 +85,10 @@ def admin_title():
 	
 	labinfo = models.LabInfo.query.filter_by(id = 1).first()
 	if labinfo == None:
-		print('admin_title(), Could not found a Lab. information.')
+		logger.error('admin_title(), Could not found a Lab. information.')
 		return redirect(url_for('protected'))
 	
-	print(labinfo.background_img_path)
+	logger.debug(labinfo.background_img_path)
 	
 	return render_template("admin_title.html", description=labinfo.description, 
 		sub_description=labinfo.sub_description, bg_filename=labinfo.background_img_path)
@@ -98,7 +102,7 @@ def admin_title_submit():
 	background_filename = request.form.get('bg_filename')
 	background_image = request.files.get('bg_image')
 
-	print('admin_title_submit(), description: %s, sub_description: %s, bg_filename: %s' % (desc_text, subdesc_text, background_filename))
+	logger.debug('admin_title_submit(), description: %s, sub_description: %s, bg_filename: %s' % (desc_text, subdesc_text, background_filename))
 
 	db_wrapper.update_lab_info(desc = desc_text, 
 		sub_desc = subdesc_text, bg_filename = background_filename, bg_image = background_image)
@@ -115,7 +119,7 @@ def admin_about():
 		text = about.text
 		sub_text = about.sub_text
 	else:
-		print('call admin_about(), Could not found a About. information.')
+		logger.warning('call admin_about(), Could not found a About. information.')
 		text = ''
 		sub_text = ''
 		
@@ -129,7 +133,7 @@ def admin_about_submit():
 	text = request.form.get('about_text')
 	sub_text = request.form.get('about_sub_text')
 
-	print('admin_about_submit(), text: %s, sub_text: %s' % (text, sub_text))
+	logger.debug('admin_about_submit(), text: %s, sub_text: %s' % (text, sub_text))
 
 	db_wrapper.update_about(text = text, sub_text = sub_text)
 
@@ -139,7 +143,7 @@ def admin_about_submit():
 @flask_login.login_required
 def admin_news(page_num):
 
-	print('admin_news(), page_num: %d' % (page_num))
+	logger.debug('admin_news(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	items = models.News.query.order_by(desc(models.News.sn)).all()
@@ -160,7 +164,7 @@ def admin_news(page_num):
 			item_page.append(item)
 		idx += 1
 
-	print('admin_news(), item_count: %d, page_count: %d' % (item_count, page_count))
+	logger.debug('admin_news(), item_count: %d, page_count: %d' % (item_count, page_count))
 	
 	return render_template("admin_news.html", page_num = page_num, page_count = page_count, item_count = item_count, item_page = item_page, start_idx = start_idx, end_idx = end_idx, today=today)
 
@@ -173,7 +177,7 @@ def admin_news_create_new():
 	date = request.form.get('date')
 	show = request.form.get('show') != None
 
-	print('admin_news_create_new(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
+	logger.debug('admin_news_create_new(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
 
 	db_wrapper.insert_news(title=title, contents=contents, date=date, show=show)
 
@@ -183,7 +187,7 @@ def admin_news_create_new():
 @flask_login.login_required
 def admin_news_edit():
 
-	print('admin_news_edit()')
+	logger.debug('admin_news_edit()')
 	
 	id = request.form.get('id')
 	title = request.form.get('title')
@@ -191,7 +195,7 @@ def admin_news_edit():
 	date = request.form.get('date')
 	show = request.form.get('show') != None
 
-	print('admin_news_edit(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
+	logger.debug('admin_news_edit(), title: %s, contents: %s, date: %s, show: %s' % (title, contents, date, show))
 
 	db_wrapper.update_news(id = id,  title=title,  contents=contents,  date=date, show=show)
 
@@ -203,7 +207,7 @@ def admin_news_delete():
 
 	id = request.form.get('id')
 	
-	print('admin_news_delete(), id: %s' % id)
+	logger.debug('admin_news_delete(), id: %s' % id)
 
 	db_wrapper.delete_item(category='news', id=id)
 
@@ -213,7 +217,7 @@ def admin_news_delete():
 @flask_login.login_required
 def admin_news_arrow(id, sn, direction):
 
-	print('admin_news_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_news_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='news', sn=sn, direction=direction)
 
@@ -223,7 +227,7 @@ def admin_news_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_news_toggle_show(id):
 
-	print('admin_news_toggle_show(%d)' % (id))
+	logger.debug('admin_news_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='news', id=id)
 
@@ -233,7 +237,7 @@ def admin_news_toggle_show(id):
 @flask_login.login_required
 def admin_research(page_num):
 	
-	print('admin_research(), page_num: %d' % (page_num))
+	logger.debug('admin_research(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	research_all = models.Research.query.order_by(desc(models.Research.sn)).all()
@@ -252,7 +256,7 @@ def admin_research(page_num):
 			research_page.append(item)
 		idx += 1
 
-	print('admin_research(), research_count: %d, page_count: %d' % (research_count, page_count))
+	logger.debug('admin_research(), research_count: %d, page_count: %d' % (research_count, page_count))
 	
 	return render_template("admin_research.html", page_num = page_num, page_count = page_count, research_count = research_count, research_page = research_page, start_idx = start_idx, end_idx = end_idx)
 
@@ -260,7 +264,7 @@ def admin_research(page_num):
 @flask_login.login_required
 def admin_research_new():
 
-	print('admin_research_create_new()')	
+	logger.debug('admin_research_create_new()')	
 
 	title = request.form.get('title')
 	text1 = request.form.get('text1')
@@ -271,7 +275,7 @@ def admin_research_new():
 	is_activated = request.form.get('is_activated')
 	show = request.form.get('show') != None
 
-	print('admin_research_create_new(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
+	logger.debug('admin_research_create_new(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
 
 	db_wrapper.insert_research(title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 
@@ -281,7 +285,7 @@ def admin_research_new():
 @flask_login.login_required
 def admin_research_edit():
 
-	print('admin_research_edit()')
+	logger.debug('admin_research_edit()')
 	
 	research_id = request.form.get('research_id')
 	title = request.form.get('title')
@@ -293,7 +297,7 @@ def admin_research_edit():
 	is_activated = request.form.get('is_activated')
 	show = request.form.get('show') != None
 	
-	print('admin_research_edit(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
+	logger.debug('admin_research_edit(), title: %s, text1: %s, text2: %s' % (title, text1, text2))
 
 	db_wrapper.update_research(id=research_id, title=title, text1=text1, text2=text2, teaser_image_path=teaser_image_path, member=member, publications=publications, is_activated=is_activated, show=show)
 
@@ -305,7 +309,7 @@ def admin_research_delete():
 	
 	id = request.form.get('research_id')
 	
-	print('admin_research_delete(), id: %s' % (id))
+	logger.debug('admin_research_delete(), id: %s' % (id))
 
 	db_wrapper.delete_item(category='research', id=id)
 
@@ -315,7 +319,7 @@ def admin_research_delete():
 @flask_login.login_required
 def admin_research_arrow(id, sn, direction):
 
-	print('admin_research_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_research_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='research', sn=sn, direction=direction)
 
@@ -325,7 +329,7 @@ def admin_research_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_research_toggle_show(id):
 
-	print('admin_research_toggle_show(%d)' % (id))
+	logger.debug('admin_research_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='research', id=id)
 
@@ -334,7 +338,7 @@ def admin_research_toggle_show(id):
 @app.route('/admin_member/<int:page_num>')
 @flask_login.login_required
 def admin_member(page_num):
-	print('admin_member(), page_num: %d' % (page_num))
+	logger.debug('admin_member(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	member_all = models.Member.query.order_by(desc(models.Member.sn)).all()
@@ -353,7 +357,7 @@ def admin_member(page_num):
 			member_page.append(item)
 		idx += 1
 
-	print('admin_member(), member_count: %d, page_count: %d' % (member_count, page_count))
+	logger.debug('admin_member(), member_count: %d, page_count: %d' % (member_count, page_count))
 	
 	return render_template("admin_member.html", page_num = page_num, page_count = page_count, member_count = member_count, member_page = member_page, start_idx = start_idx, end_idx = end_idx)
 
@@ -382,7 +386,7 @@ def admin_member_new():
 	# link4 = request.form.get('link4')
 	show = request.form.get('show') != None
 
-	print('admin_member_new(), name: %s, email: %s, student_id: %s' % (name, email, student_id))
+	logger.debug('admin_member_new(), name: %s, email: %s, student_id: %s' % (name, email, student_id))
 
 	db_wrapper.insert_member(name=name, email=email, student_id=student_id, course=course, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 
@@ -392,7 +396,7 @@ def admin_member_new():
 @flask_login.login_required
 def admin_member_edit():
 
-	print('admin_member_edit()')
+	logger.debug('admin_member_edit()')
 	
 	member_id = request.form.get('member_id')
 	name = request.form.get('name')
@@ -420,7 +424,7 @@ def admin_member_edit():
 	# link4 = request.form.get('link4')
 	show = request.form.get('show') != None
 	
-	print('admin_member_edit(), name: %s, student_id: %s, email: %s' % (name, student_id, email))
+	logger.debug('admin_member_edit(), name: %s, student_id: %s, email: %s' % (name, student_id, email))
 
 	db_wrapper.update_member(id=member_id, name=name, email=email, student_id=student_id, course=course, picture_filename=picture_filename, picture=picture, interest=interest, bs=bs, ms=ms, introduction=introduction, link_homepage=link_homepage, link_github=link_github, link_facebook=link_facebook, link_twitter=link_twitter, link_linkedin=link_linkedin, show=show)
 
@@ -432,7 +436,7 @@ def admin_member_delete():
 
 	id = request.form.get('member_id')
 	
-	print('admin_member_delete(), id: %s' % (id))
+	logger.debug('admin_member_delete(), id: %s' % (id))
 
 	db_wrapper.delete_item(category='people', id=id)
 
@@ -442,7 +446,7 @@ def admin_member_delete():
 @flask_login.login_required
 def admin_member_arrow(id, sn, direction):
 
-	print('admin_member_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_member_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='people', sn=sn, direction=direction)
 
@@ -452,7 +456,7 @@ def admin_member_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_member_toggle_show(id):
 
-	print('admin_member_toggle_show(%d)' % (id))
+	logger.debug('admin_member_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='people', id=id)
 
@@ -462,7 +466,7 @@ def admin_member_toggle_show(id):
 @flask_login.login_required
 def admin_teaching(page_num):
 	
-	print('admin_teaching(), page_num: %d' % (page_num))
+	logger.debug('admin_teaching(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	teaching_all = models.Teaching.query.order_by(desc(models.Teaching.sn)).all()
@@ -481,7 +485,7 @@ def admin_teaching(page_num):
 			teaching_page.append(item)
 		idx += 1
 
-	print('admin_teaching(), teaching_count: %d, page_count: %d' % (teaching_count, page_count))
+	logger.debug('admin_teaching(), teaching_count: %d, page_count: %d' % (teaching_count, page_count))
 	
 	return render_template("admin_teaching.html", page_num = page_num, page_count = page_count, teaching_count = teaching_count, teaching_page = teaching_page, start_idx = start_idx, end_idx = end_idx)
 
@@ -498,7 +502,7 @@ def admin_teaching_new():
 	video = request.form.get('video')
 	show = request.form.get('show') != None
 
-	print('admin_teaching_new(), code: %s, name: %s' % (code, name))
+	logger.debug('admin_teaching_new(), code: %s, name: %s' % (code, name))
 
 	db_wrapper.insert_teaching(code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 
@@ -508,7 +512,7 @@ def admin_teaching_new():
 @flask_login.login_required
 def admin_teaching_edit():
 
-	print('admin_teaching_edit()')
+	logger.debug('admin_teaching_edit()')
 	
 	teaching_id = request.form.get('teaching_id')
 	code = request.form.get('code')
@@ -520,7 +524,7 @@ def admin_teaching_edit():
 	video = request.form.get('video')
 	show = request.form.get('show') != None
 	
-	print('admin_teaching_edit(), id: %d. code: %s, name: %s, audience:%s ' % (int(teaching_id), code, name, target_audience))
+	logger.debug('admin_teaching_edit(), id: %d. code: %s, name: %s, audience:%s ' % (int(teaching_id), code, name, target_audience))
 
 	db_wrapper.update_teaching(id=teaching_id, code=code, name=name, description=description, when=when, target_audience=target_audience, link=link, video=video, show=show)
 
@@ -532,7 +536,7 @@ def admin_teaching_delete():
 	
 	id = request.form.get('teaching_id')
 	
-	print('admin_teaching_delete(), id: %s' % (id))
+	logger.debug('admin_teaching_delete(), id: %s' % (id))
 
 	db_wrapper.delete_item(category='teaching', id=id)
 
@@ -542,7 +546,7 @@ def admin_teaching_delete():
 @flask_login.login_required
 def admin_teaching_arrow(id, sn, direction):
 
-	print('admin_teaching_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_teaching_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='teaching', sn=sn, direction=direction)
 
@@ -552,7 +556,7 @@ def admin_teaching_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_teaching_toggle_show(id):
 
-	print('admin_teaching_toggle_show(%d)' % (id))
+	logger.debug('admin_teaching_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='teaching', id=id)
 
@@ -562,7 +566,7 @@ def admin_teaching_toggle_show(id):
 @flask_login.login_required
 def admin_publication(page_num):
 	
-	print('admin_publication(), page_num: %d' % (page_num))
+	logger.debug('admin_publication(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	publication_all = models.Publications.query.order_by(desc(models.Publications.sn)).all()
@@ -581,7 +585,7 @@ def admin_publication(page_num):
 			publication_page.append(item)
 		idx += 1
 
-	print('admin_publication(), publication_count: %d, page_count: %d' % (publication_count, page_count))
+	logger.debug('admin_publication(), publication_count: %d, page_count: %d' % (publication_count, page_count))
 	
 	return render_template("admin_publication.html", page_num = page_num, page_count = page_count, publication_count = publication_count, publication_page = publication_page, start_idx = start_idx, end_idx = end_idx)
 
@@ -604,7 +608,7 @@ def admin_publication_new():
 	# is_activated = request.form.get('is_activated')
 	show = request.form.get('show') != None
 	
-	print('admin_publication_new(), title: %s, description: %s' % (title, description))
+	logger.debug('admin_publication_new(), title: %s, description: %s' % (title, description))
 
 	# db_wrapper.insert_publication(title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
 	db_wrapper.insert_publication(title=title, description=description, year=year, abstract=abstract, teaser_image=teaser_image, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
@@ -615,7 +619,7 @@ def admin_publication_new():
 @flask_login.login_required
 def admin_publication_edit():
 
-	print('admin_publication_edit()')
+	logger.debug('admin_publication_edit()')
 	
 	publication_id = request.form.get('publication_id')
 	title = request.form.get('title')
@@ -633,7 +637,7 @@ def admin_publication_edit():
 	# link_etc = request.form.get('link_etc')
 	show = request.form.get('show') != None
 	
-	print('admin_publication_edit(), title: %s, description: %s' % (title, description))
+	logger.debug('admin_publication_edit(), title: %s, description: %s' % (title, description))
 
 	# db_wrapper.update_publication(publication_id=publication_id, title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
 	db_wrapper.update_publication(id=publication_id, title=title, description=description, year=year, abstract=abstract, teaser_filename=teaser_filename, teaser_image=teaser_image, authors=authors, link_pdf1=link_pdf1, link_video=link_video, link_source=link_source, link_url=link_url, show=show)
@@ -646,7 +650,7 @@ def admin_publication_delete():
 
 	id = request.form.get('publication_id')
 	
-	print('admin_publication_delete(), id: %s' % (id))
+	logger.debug('admin_publication_delete(), id: %s' % (id))
 
 	db_wrapper.delete_item(category='publications', id=id)
 
@@ -656,7 +660,7 @@ def admin_publication_delete():
 @flask_login.login_required
 def admin_publication_arrow(id, sn, direction):
 
-	print('admin_publication_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_publication_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='publications', sn=sn, direction=direction)
 
@@ -666,7 +670,7 @@ def admin_publication_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_publication_toggle_show(id):
 
-	print('admin_publication_toggle_show(%d)' % (id))
+	logger.debug('admin_publication_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='publications', id=id)
 
@@ -676,7 +680,7 @@ def admin_publication_toggle_show(id):
 @flask_login.login_required
 def admin_links(page_num):
 	
-	print('admin_links(), page_num: %d' % (page_num))
+	logger.debug('admin_links(), page_num: %d' % (page_num))
 
 	count_per_page = 10
 	links_all = models.Links.query.order_by(desc(models.Links.sn)).all()
@@ -695,7 +699,7 @@ def admin_links(page_num):
 			links_page.append(item)
 		idx += 1
 
-	print('admin_links(), links_count: %d, page_count: %d' % (links_count, page_count))
+	logger.debug('admin_links(), links_count: %d, page_count: %d' % (links_count, page_count))
 	
 	return render_template("admin_links.html", page_num = page_num, page_count = page_count, links_count = links_count, links_page = links_page, start_idx = start_idx, end_idx = end_idx)
 
@@ -711,7 +715,7 @@ def admin_links_new():
 	# is_activated = request.form.get('is_activated')
 	show = request.form.get('show') != None
 	
-	print('admin_links_new(), name: %s, description: %s' % (name, description))
+	logger.debug('admin_links_new(), name: %s, description: %s' % (name, description))
 
 
 	db_wrapper.insert_link(name=name, description=description, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
@@ -722,7 +726,7 @@ def admin_links_new():
 @flask_login.login_required
 def admin_links_edit():
 
-	print('admin_links_edit()')
+	logger.debug('admin_links_edit()')
 	
 	link_id = request.form.get('link_id')
 	name = request.form.get('name')
@@ -734,7 +738,7 @@ def admin_links_edit():
 
 	show = request.form.get('show') != None
 	
-	print('admin_links_edit(), name: %s, description: %s, image_path: %s' % (name, description, image_path))
+	logger.debug('admin_links_edit(), name: %s, description: %s, image_path: %s' % (name, description, image_path))
 
 	# db_wrapper.update_links(links_id=links_id, title=title, description=description, abstract=abstract, teaser_image_path=teaser_image_path, authors=authors, link_pdf1=link_pdf1, link_pdf2=link_pdf2, link_video=link_video, link_source=link_source, link_url=link_url, link_etc=link_etc)
 	db_wrapper.update_link(id=link_id, name=name, description=description, image_name=image_name, image_path=image_path, link_url=link_url, link_etc=link_etc, show=show)
@@ -747,7 +751,7 @@ def admin_links_delete():
 	
 	id = request.form.get('link_id')
 	
-	print('admin_links_delete(), id: %s' % (id))
+	logger.debug('admin_links_delete(), id: %s' % (id))
 
 	db_wrapper.delete_item(category='links', id=id)
 
@@ -759,7 +763,7 @@ def admin_links_delete():
 @flask_login.login_required
 def admin_links_arrow(id, sn, direction):
 
-	print('admin_links_arrow(%d, %s)' % (sn, direction))
+	logger.debug('admin_links_arrow(%d, %s)' % (sn, direction))
 
 	db_wrapper.change_position(category='links', sn=sn, direction=direction)
 
@@ -769,7 +773,7 @@ def admin_links_arrow(id, sn, direction):
 @flask_login.login_required
 def admin_links_toggle_show(id):
 
-	print('admin_links_toggle_show(%d)' % (id))
+	logger.debug('admin_links_toggle_show(%d)' % (id))
 
 	db_wrapper.toggle_show(category='links', id=id)
 

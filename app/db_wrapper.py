@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from sqlalchemy import desc
 
+logger = app.logger
+
 def get_table(category) :
 	if category == 'news':
 		return models.News
@@ -360,19 +362,25 @@ def toggle_show(category, id):
 		print('item == None')
 
 def change_position(category, sn, direction):
-	
+
+	print('change_position({}, {}, {})'.format(category, sn, direction))
+
 	table = get_table(category)
 
 	sn = int(sn)
-	if direction == 'up':
-		sn_next = sn+1
-	else:
-		sn_next = sn-1
-	temp = -1
 
 	item = table.query.filter_by(sn=sn).first()
-	item_next = table.query.filter_by(sn=sn_next).first()
+	
+	# item_next = table.query.filter_by(sn=sn_next).first()
+	if direction == 'up':
+		temp_item = table.query.filter(table.sn>sn).order_by(table.sn)	
+	else:
+		temp_item = table.query.filter(table.sn<sn).order_by(desc(table.sn))
+	
+	item_next = temp_item.first()
+	sn_next =item_next.sn
 
+	temp = -1
 	if item != None and item_next != None:
 		table.query.filter_by(sn=sn_next).update(dict(sn=temp))
 		table.query.filter_by(sn=sn).update(dict(sn=sn_next))
