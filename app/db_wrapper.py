@@ -1,6 +1,6 @@
 import os
 from app import app, db, models
-from werkzeug.utils import secure_filename
+# from werkzeug.utils import secure_filename
 from datetime import datetime
 from sqlalchemy import desc
 
@@ -25,7 +25,8 @@ def get_table(category) :
 def update_lab_info(desc, sub_desc, bg_filename, bg_image):
 
 	if bg_image != None:
-		bg_name = secure_filename(bg_image.filename)
+		# bg_name = secure_filename(bg_image.filename)
+		bg_name = bg_image.filename
 		
 		bg_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/')
 		bg_path = os.path.join(bg_path, bg_name)
@@ -134,7 +135,10 @@ def update_research(id, title, text1, text2, teaser_image_path, member, publicat
 def insert_member(name, email, student_id, course, picture, interest, bs, ms, introduction, link_github, link_facebook, link_twitter, link_linkedin, show):
 
 	if picture != None:
-		picture_name = "%s_%s" % (name, secure_filename(picture.filename))
+		print(picture.filename)
+		# picture_name = "%s_%s" % (name, secure_filename(picture.filename))
+		picture_name = "%s_%s" % (name, picture.filename)
+		print(picture_name)
 
 		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
 		picture_path = os.path.join(picture_path, picture_name)
@@ -155,7 +159,10 @@ def insert_member(name, email, student_id, course, picture, interest, bs, ms, in
 def update_member(id, name, email, student_id, course, picture_filename, picture, interest, bs, ms, introduction, link_homepage, link_github, link_facebook, link_twitter, link_linkedin, show):
 
 	if picture != None:
-		picture_name = secure_filename(picture.filename)
+		print(picture.filename)
+		# picture_name = "%s_%s" % (name, secure_filename(picture.filename))
+		picture_name = "%s_%s" % (name, picture.filename)
+		print(picture_name)
 
 		picture_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/member/')
 		picture_path = os.path.join(picture_path, picture_name)
@@ -224,7 +231,8 @@ def update_teaching(id, code, name, description, when, target_audience, link, vi
 def insert_publication(title, description, year, abstract, teaser_image, authors, link_pdf1, link_video, link_source, link_url, show):
 
 	if teaser_image != None:
-		teaser_image_name = secure_filename(teaser_image.filename)
+		# teaser_image_name = secure_filename(teaser_image.filename)
+		teaser_image_name = teaser_image.filename
 
 		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
 		teaser_path = os.path.join(teaser_path, teaser_image_name)
@@ -247,7 +255,8 @@ def update_publication(id, title, description, year, abstract, teaser_filename, 
 
 	
 	if teaser_image != None:
-		teaser_image_name = secure_filename(teaser_image.filename)
+		# teaser_image_name = secure_filename(teaser_image.filename)
+		teaser_image_name = teaser_image.filename
 
 		teaser_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/publications/')
 		teaser_path = os.path.join(teaser_path, teaser_image_name)
@@ -286,7 +295,8 @@ def insert_link(name, description, image_path, link_url, link_etc, show):
 
 	
 	if image_path != None:
-		imagefile_name = secure_filename(image_path.filename)
+		# imagefile_name = secure_filename(image_path.filename)
+		imagefile_name = image_path.filename
 
 		image_full_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/links/')
 		image_full_path = os.path.join(image_full_path, imagefile_name)
@@ -307,7 +317,8 @@ def update_link(id, name, description, image_name, image_path, link_url, link_et
 
 	
 	if image_path != None:
-		imagefile_name = secure_filename(image_path.filename)
+		# imagefile_name = secure_filename(image_path.filename)
+		imagefile_name = image_path.filename
 
 		image_full_path = os.path.join(app.config['UPLOAD_FOLDER'],'img/links/')
 		image_full_path = os.path.join(image_full_path, imagefile_name)

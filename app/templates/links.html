@@ -3,14 +3,37 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="section-heading">
-                    <h2>Link</h2>
-                    <!-- <p class="text-muted">Check out what you can do with this app theme!</p> -->
+                    <h2>Links</h2>
                     <hr>
                 </div>
             </div>
         </div>
 
-        {% for link in links %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="container-fluid">
+                    <div class="row">
+                        {% for link in links %}
+                        <div class="col-md-12">
+                            <div class="feature-item">
+                                <a href="{{link.link_url}}" class="portfolio-link" data-toggle="modal">
+                                    <img src={{ url_for('static', filename='src/img/links/'+link.image_path)}} class="img-publication" alt="">
+                                </a>
+                                <div class="publication-main">
+                                    <h-publication-title>
+                                        <a href="{{link.link_url}}" class="portfolio-link, publication" data-toggle="modal">{{link.name}}</a>
+                                    </h-publication-title>
+                                    <p class="text-muted">{{link.description}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <!-- {% for link in links %}
 
             {% if (loop.index % 4 == 0) %}
             <div class="row center-block">
@@ -30,42 +53,6 @@
             {% endif %}
 
 
-        {% endfor %}
+        {% endfor %} -->
 
-        <!-- <div class="row">
-            <div class="col-md-12">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-screen-smartphone text-primary"></i>
-                                <h3></h3>
-                                <p class="text-muted"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-camera text-primary"></i>
-                                <h3></h3>
-                                <p class="text-muted"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-present text-primary"></i>
-                                <h3></h3>
-                                <p class="text-muted"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="feature-item">
-                                <i class="icon-lock-open text-primary"></i>
-                                <h3></h3>
-                                <p class="text-muted"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 </section>
