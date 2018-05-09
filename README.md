@@ -2,7 +2,7 @@
 > Data and Visual Analytics Lab. Homepage
 
 ## Dependencies
-Requires the Flask, Sqlite, Bootstrap and so on.
+Requires the Flask, Sqlite, Bootstrap, etc.
 
 ## Usage
 ```bash
