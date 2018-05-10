@@ -1,5 +1,6 @@
 # coding: utf-8
 from app import app
+import flask
 from flask import render_template, redirect, url_for, request
 import flask_login
 import os
@@ -7,13 +8,12 @@ from shutil import copyfile
 from app import db, models, db_wrapper
 from sqlalchemy import desc
 from datetime import datetime
+import protected
 
 logger = app.logger
 
-# Our mock database.
-users = {'davian': {'pw': 'visualking!'}}
-
-# category = {'news', 'people', 'publications', 'research', 'teaching', 'links'}
+users = protected.users
+allowed = protected.admin_allowed
 
 app.secret_key = 'davian-3nff3infalfifh8serfh94fnkdn'  # Change this!
 
@@ -64,7 +64,9 @@ def member_page(member_name):
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-	if request.remote_addr != '163.152.162.105':
+	# if request.remote_addr != '163.152.162.105':
+	# 	return flask.abort(400)
+	if request.remote_addr not in allowed:
 		return flask.abort(400)
 
 	if request.method == 'GET':
