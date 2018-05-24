@@ -1,11 +1,22 @@
 <!-- <header style="background-image:url('../static/src/img/bg-cta.jpg');"> -->
 <!-- <header style="background-image:url('{{ url_for('static', filename='src/img/'+labinfo.background_img_path) }}');"> -->
-<header style="background-image:url({{ url_for('static', filename='src/img/'+labinfo.background_img_path) }});">
+<header id="header-main" style="background-image:url({{ url_for('static', filename='src/img/'+labinfo.background_img_path) }}); min-height: 0 !important;" class="header-img">
+    <script type="text/javascript">
+        var img = document.createElement('img');
+        img.onload = function () { 
+            if(window.innerWidth/window.innerHeight<img.width/img.height)
+            {
+                document.getElementById('header-main').style.height=window.innerWidth/img.width*img.height + "px";
+                document.getElementById('header-content-inner').style.top=window.innerWidth/img.width*img.height/2 + "px";
+            }
+        };
+        img.src="{{ url_for('static', filename='src/img/'+labinfo.background_img_path) }}";
+    </script>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="header-content">
-                    <div class="header-content-inner">
+                    <div class="header-content-inner" id="header-content-inner">
                         <!-- <h1>DAVIAN: <br>Data and Visual Analytics Lab.</h1> -->
                         <h1>{{labinfo.name}}<br>{{labinfo.description}}
                         <!-- Ex) <a href="#download" class="btn btn-outline btn-xl page-scroll">Start Now for Free!</a> -->

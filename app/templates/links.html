@@ -16,14 +16,20 @@
                         {% for link in links %}
                         <div class="col-md-12">
                             <div class="feature-item">
-                                <a href="{{link.link_url}}" class="portfolio-link" data-toggle="modal">
-                                    <img src={{ url_for('static', filename='src/img/links/'+link.image_path)}} class="img-publication" alt="">
-                                </a>
+
                                 <div class="publication-main">
-                                    <h-publication-title>
-                                        <a href="{{link.link_url}}" class="portfolio-link, publication" data-toggle="modal">{{link.name}}</a>
-                                    </h-publication-title>
-                                    <p class="text-muted">{{link.description}}
+
+                                    <div style="display: inline-block;width:120px;vertical-align: top;">
+                                        <a href="{{link.link_url}}" class="portfolio-link" data-toggle="modal">
+                                            <img src={{ url_for('static', filename='src/img/links/'+link.image_path)}} class="img-publication" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="link-detail">
+                                        <h-publication-title>
+                                            <a href="{{link.link_url}}" class="portfolio-link, publication" data-toggle="modal">{{link.name}}</a>
+                                        </h-publication-title>
+                                        <p class="text-muted">{{link.description}}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -50,7 +50,7 @@ def index():
 							people=people, 
 							bg=bg,
 							teaching=teaching,
-							publications=publications, 
+							publications=publications,
 							links=links)
 
 @app.route('/member_page/<member_name>')

@@ -72,10 +72,10 @@
         {% for person in people %}
         
             {% if (loop.index % 4 == 0) %}
-            <div class="row center-block">
+            <!--div class="row center-block"-->
             {% endif %}
 
-            <div class="col-md-3">
+            <div class="col-xs-12 col-sm-6 col-md-3" style="height:480px">
                 <div class="team-member">
                     {% if person.link_homepage != '' and person.link_homepage != None %}
                     <a href="{{person.link_homepage}}">
@@ -118,7 +118,7 @@
                         {% else %} To be uploaded 
                         {% endif %}
                     </p>
-                    <ul class="list-inline social-buttons">
+                    <ul class="list-inline social-buttons" style="font-size:20px;">
                         <li>
                             <a href="{{person.link_github}}"><i class="fa fa-github"></i></a>
                         </li>
@@ -136,7 +136,7 @@
             </div>
 
             {% if (loop.index % 4 == 0) %}
-            </div>
+            <!--/div-->
             {% endif %}
 
         {% endfor%}
