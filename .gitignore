@@ -3,3 +3,4 @@ app.db
 app/templates/member_page/*.html
 app/static/src/img/*
 .vscode/*
+.idea/*
