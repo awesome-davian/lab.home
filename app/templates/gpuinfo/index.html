@@ -1,15 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edmin</title>
+        <title>GPU Information</title>
         {#        <link type="text/css" href="../../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">#}
         <link type="text/css" href="{{ url_for("static", filename="bootstrap/css/bootstrap.min.css") }}" rel="stylesheet">
         <link type="text/css" href="{{ url_for("static", filename="bootstrap/css/bootstrap-responsive.min.css") }}" rel="stylesheet">
         <link type="text/css" href="{{ url_for("static", filename="edmin/css/theme.css") }}" rel="stylesheet">
         <link type="text/css" href="{{ url_for("static", filename="edmin/images/icons/css/font-awesome.css") }}/" rel="stylesheet">
+        <link type="text/css" href="{{ url_for("static", filename="css/gpuinfo.css") }}/" rel="stylesheet">
         <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet'>
     </head>
 <body>
@@ -46,7 +47,8 @@
             <div class="span9">
                 <div class="content">
                     <div id="gpu-info">
-                        <div class="row-fluid"><button class="btn btn-success" v-on:click="getGPUInfo">Refresh</button></div>
+                        <div class="row-fluid"><button class="btn btn-success" v-on:click="getGPUInfo">Refresh</button>
+                            <img class="loader" v-bind:class="{ hide: !all_loading }" src="{{ url_for("static", filename="images/reload-200px.gif") }}" alt="Loading..."></div>
                         <br>
                         <div class="row-fluid" v-for="servers in gpu_info">
                             <div class="module span4 gpu-info" v-for="server in servers">
@@ -54,7 +56,7 @@
                                 <div class="module-body">
                                     <ul class="unstyled widget">
                                         <li v-for="(info, index) in server.info">
-                                            <p><strong>No. <% index %></strong><span class="pull-right small muted"><span><% info.temperature %> &#8451; / </span> <span>CPU: <% info.utilization %> %</span> </span>
+                                            <p><strong><% info.name %></strong><span class="pull-right small muted"><span><% info.temperature %> &#8451; / </span> <span>CPU: <% info.utilization %> %</span> </span>
                                             </p>
                                             <div class="progress tight">
                                                 <div class="bar" v-bind:class="{'bar-success': info.color_class.success, 'bar': info.color_class.normal, 'bar-warning': info.color_class.warning, 'bar-danger': info.color_class.danger}" v-bind:style="{width: info.memory_percentage+'%'}"></div>
@@ -92,7 +94,7 @@
         delimiters: ['<%', '%>'],
         el: '#gpu-info',
         data: {
-            message: 'Hello Vue!',
+            all_loading: false,
             gpu_info: [],
             test: [1,2,3,4,]
         },
@@ -100,7 +102,13 @@
             getGPUInfo: function () {
                 $.ajax({
                     url: "/gpuinfo/refresh",
-                    method: "GET"
+                    method: "GET",
+                    beforeSend: function (){
+                        this.all_loading = true;
+                    }.bind(this),
+                    complete: function () {
+                        this.all_loading = false;
+                    }.bind(this)
                 }).success(data => {
                     this.gpu_info = [];
                     chunk_size = 3;
